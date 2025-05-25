@@ -9,33 +9,12 @@ using System.Xml.Linq;
 
 namespace SourceCodeBuilder
 {
-    public class test
-    {
-        void t()
-        {
-            MyNamespace ns = new MyNamespace();
-            ns.AddClass(MyClass.PublicClass("ss")
-                .AddProperty(MyProperty.PublicBoolean("IsLast"))
-                .AddProperty(MyProperty.PublicBoolean("IsLast"))
-                .AddProperty(MyProperty.PublicBoolean("IsLast"))
-                .AddProperty(MyProperty.PublicBoolean("IsLast"))
-                .AddProperty(MyProperty.PublicBoolean("IsLast"))
-                .AddProperty(MyProperty.PublicBoolean("IsLast"))
-                .AddProperty(MyProperty.PublicBoolean("IsLast"))
-                .AddProperty(MyProperty.PublicBoolean("IsLast"))
-                .AddProperty(MyProperty.PublicBoolean("IsLast"))
-                .AddProperty(MyProperty.PublicBoolean("IsLast"))
-                .AddProperty(MyProperty.PublicBoolean("IsLast")).Build());
-
-        }
-    }
-
-    
     public class MyClassBuilder
     {
         public static bool DEFAULT_PARTIAL = true;
 
         MyClass _myClass = new();
+        internal string Tabs = string.Empty;
 
         /// <summary>
         /// Class with internal access
@@ -318,37 +297,155 @@ namespace SourceCodeBuilder
 
         }
 
+        /// <summary>
+        /// Add class field
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /// MyClass.PublicClass("Program").AddField(MyField.String("Name").Build()).ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// public class Program
+        /// {
+        ///     string Name;
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
         public MyClassBuilder AddField(MyField? field)
         {
             if(field != null)
             {
                 _myClass.AddField(field);
+                //field.Tabs = _myClass.Tabs + "    ";
             }
             return this;
 
         }
 
+        /// <summary>
+        /// Add class field
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /// MyClass.PublicClass("Program").AddField(MyField.String("Name")).ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// public class Program
+        /// {
+        ///     string Name;
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
         public MyClassBuilder AddField(MyFieldBuilder fieldBuilder)
         {
             return AddField(fieldBuilder?.Build());
         }
+
+        /// <summary>
+        /// Add class property
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /// MyClass.PublicClass("Program").AddProperty(MyProperty.Int("Value").Init(100).Build()).ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// public class Program
+        /// {
+        ///     int Value { get; set; } = 100;;
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
 
         public MyClassBuilder AddProperty(MyProperty? property)
         {
             if (property != null)
             {
                 _myClass.AddProperty(property);
+                //property.Tabs = _myClass.Tabs + "    ";
             }
             return this;
 
         }
 
+        /// <summary>
+        /// Add class property
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /// MyClass.PublicClass("Program").AddProperty(MyProperty.Int("Value").Init(100)).ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// public class Program
+        /// {
+        ///     int Value { get; set; } = 100;;
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
         public MyClassBuilder AddProperty(MyPropertyBuilder propertyBiulder)
         {
             return AddProperty(propertyBiulder?.Build());
         }
 
+        /// <summary>
+        /// Add method
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /////////////////////////////////////// MyClass.PublicClass("Program").AddMetho(MyField.String("Name")).ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// public class Program
+        /// {
+        ///     string Name;
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyClassBuilder AddMethod(MyMethodBuilder methodBuilder)
+        {
+            return AddMethod(methodBuilder?.Build());
+        }
 
+        /// <summary>
+        /// Add method
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /////////////////////////////////////// MyClass.PublicClass("Program").AddMetho(MyField.String("Name")).ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// public class Program
+        /// {
+        ///     string Name;
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyClassBuilder AddMethod(MyMethod method)
+        {
+            if (method != null)
+            {
+                _myClass.AddMethod(method);
+                //method.AddTabs(_myClass.Tabs + "    ");
+            }
+            return this;
+        }
 
         /// <summary>
         /// Add base type with name
@@ -733,12 +830,6 @@ namespace SourceCodeBuilder
             }
         }
 
-        private void Test()
-        {
-            var class1 = MyClass.Public.Static.Name("afas").Generic("d").BaseType("F").BaseTypes("T, ER");
-            var class2 = MyClass.Internal.Abstract.Name("TestClass").Generic_T.BaseInterface.BaseTypes("IConfig", "IEnumerable");
-            var publicClass = MyClass.PublicClass("Nnn", "INnn");
-        }
 
         class TestClass<T, M> where T : class where M : class { }
     }

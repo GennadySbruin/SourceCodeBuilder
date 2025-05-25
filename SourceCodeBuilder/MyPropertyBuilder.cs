@@ -193,7 +193,7 @@ namespace SourceCodeBuilder
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("Propery name");
+                throw new ArgumentNullException("Property name");
             }
             _myProperty.PropertyName = name;
             return this;
@@ -216,7 +216,7 @@ namespace SourceCodeBuilder
         {
             if (string.IsNullOrEmpty(typeName))
             {
-                throw new ArgumentNullException("Propery name");
+                throw new ArgumentNullException("Property name");
             }
             _myProperty.PropertyTypeName = typeName;
             return this;
@@ -241,7 +241,7 @@ namespace SourceCodeBuilder
             {
                 if (string.IsNullOrEmpty(_myProperty.PropertyTypeName))
                 {
-                    throw new ArgumentNullException("Propery type is null");
+                    throw new ArgumentNullException("Property type is null");
                 }
                 _myProperty.PropertyTypeName += "[]";
                 return this;
@@ -267,7 +267,7 @@ namespace SourceCodeBuilder
             {
                 if (string.IsNullOrEmpty(_myProperty.PropertyTypeName))
                 {
-                    throw new ArgumentNullException("Propery type is null");
+                    throw new ArgumentNullException("Property type is null");
                 }
                 _myProperty.PropertyTypeName = $"List<{_myProperty.PropertyTypeName}>";
                 return this;
@@ -379,11 +379,417 @@ namespace SourceCodeBuilder
             }
         }
 
-        public override string? ToString()
+
+        /// <summary>
+        /// Set initial expression from string.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyBuilder.Type("string").Name("Value").Init("Test").ToString();
+        /// </code>
+        /// result:
+        /// <para><c>string Value { get; set; } = "Test";</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder Init(string expression)
         {
-            return ToString(MyDefaultPropertyDeclarationFormatter.Formatter);
+            _myProperty.InitialExpression = $"\"{expression}\"";
+            return this;
         }
 
+        /// <summary>
+        /// Set initial expression from int.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyBuilder.Type("int").Name("Value").Init(2).ToString();
+        /// </code>
+        /// result:
+        /// <para><c>int Value { get; set; } = 2;</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder Init(int expression)
+        {
+            _myProperty.InitialExpression = expression.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// Set initial expression from double.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyBuilder.Type("double").Name("Value").Init(2.3).ToString();
+        /// </code>
+        /// result:
+        /// <para><c>double Value { get; set; } = 2.3;</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder Init(double expression)
+        {
+            _myProperty.InitialExpression = expression.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// Set initial expression from decimal.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyBuilder.Type("decimal").Name("Value").Init(2.4M).ToString();
+        /// </code>
+        /// result:
+        /// <para><c>deciaml Value { get; set; } = 2.4M;</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder Init(decimal expression)
+        {
+            _myProperty.InitialExpression = expression.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// Set initial expression from float.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyBuilder.Type("float").Name("Value").Init(2.001f).ToString();
+        /// </code>
+        /// result:
+        /// <para><c>float Value { get; set; } = 2.001f;</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder Init(float expression)
+        {
+            _myProperty.InitialExpression = expression.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// Set initial expression from boolean.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyBuilder.Type("bool").Name("Value").Init(true).ToString();
+        /// </code>
+        /// result:
+        /// <para><c>bool Value { get; set; } = true;</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder Init(bool expression)
+        {
+            _myProperty.InitialExpression = expression ? "true" : "false";
+            return this;
+        }
+
+        /// <summary>
+        /// Set initial expression from ExpressionBuilder.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyBuilder.Type("float").Name("Value").Init(2.001f).ToString();
+        /// </code>
+        /// result:
+        /// <para><c>float Value { get; set; } = 2.001f;</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder Init(MyCodeExpressionBuilder expressionBuilder)
+        {
+            _myProperty.InitialExpression = expressionBuilder.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// Get only property.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyPublicFloat("Value").GetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <para><c>public Value { get ... ; };</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder GetOnly
+        {
+            get
+            {
+                _myProperty.WithSetter = false;
+                _myProperty.WithGetter = true;
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Set only property.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyPublicFloat("Value").SetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <para><c>public Value { set ... ; };</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder SetOnly
+        {
+            get
+            {
+                _myProperty.WithSetter = true;
+                _myProperty.WithGetter = false;
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Set getter code (default = get;)
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyProperty.PublicInt("Count").GetterExpression("{ return _count; }").GetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <para><c>int Count { get { return _count; } }</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MyPropertyBuilder GetterExpression(string expression)
+        {
+            if (string.IsNullOrEmpty(expression))
+            {
+                throw new ArgumentNullException("Expression");
+            }
+            _myProperty.GetterExpression = expression;
+            return this;
+        }
+
+        /// <summary>
+        /// Set getter code (default = get;)
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyProperty.PublicInt("Count").GetterExpression("{ return _count; }").GetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <para><c>int Count { get { return _count; } }</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MyPropertyBuilder GetterExpression(MyCodeExpression expression)
+        {
+            _myProperty.GetterExpression = expression.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// Set getter code (default = get;)
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyProperty.PublicInt("Count").GetterExpression("{ return _count; }").GetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <para><c>int Count { get { return _count; } }</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MyPropertyBuilder GetterExpression(MyCodeExpressionBuilder expressionBuilder)
+        {
+            _myProperty.GetterExpression = expressionBuilder.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// Set getter code (default = get;)
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyProperty.PublicInt("Count").GetterExpression("{ return _count; }").GetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <para><c>int Count { set { _count = value; } }</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MyPropertyBuilder SetterExpression(string expression)
+        {
+            if (string.IsNullOrEmpty(expression))
+            {
+                throw new ArgumentNullException("Expression");
+            }
+            _myProperty.SetterExpression = expression;
+            return this;
+        }
+
+        /// <summary>
+        /// Set getter code (default = get;)
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyProperty.PublicInt("Count").GetterExpression("{ return _count; }").GetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <para><c>int Count { set { _count = value; } }</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MyPropertyBuilder SetterExpression(MyCodeExpression expression)
+        {
+            _myProperty.SetterExpression = expression.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// Set getter code (default = get;)
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyProperty.PublicInt("Count").GetterExpression("{ return _count; }").GetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <para><c>int Count { set { _count = value; } }</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MyPropertyBuilder SetterExpression(MyCodeExpressionBuilder expressionBuilder)
+        {
+            _myProperty.SetterExpression = expressionBuilder.ToString();
+            return this;
+        }
+
+        /// <summary>
+        /// Set getter and setter code, expand code block
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyProperty.PublicInt("Count").ExpandGetterSetter("{ return _count; }").GetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// int Count
+        /// {
+        ///     get
+        ///     {
+        ///         return _count;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MyPropertyBuilder ExpandGetterSetter(string? getterExpression, string? setterExpression)
+        {
+            _myProperty.ExpandCodeBlock = true;
+            if (!string.IsNullOrEmpty(getterExpression))
+            {
+                _myProperty.GetterExpression = getterExpression;
+            }
+            if (!string.IsNullOrEmpty(setterExpression))
+            {
+                _myProperty.SetterExpression = setterExpression;
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Set getter and setter code, expand code block
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyProperty.PublicInt("Count").ExpandGetterSetter("{ return _count; }").GetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// int Count
+        /// {
+        ///     get
+        ///     {
+        ///         return _count;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MyPropertyBuilder ExpandGetterSetter(MyProperty? getterExpression, MyProperty? setterExpression)
+        {
+            _myProperty.ExpandCodeBlock = true;
+            if (getterExpression != null)
+            {
+                _myProperty.GetterExpression = getterExpression.ToString();
+            }
+            if (setterExpression != null)
+            {
+                _myProperty.SetterExpression = setterExpression.ToString();
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Set getter and setter code, expand code block
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyProperty.PublicInt("Count").ExpandGetterSetter("{ return _count; }").GetOnly.ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// int Count
+        /// {
+        ///     get
+        ///     {
+        ///         return _count;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MyPropertyBuilder ExpandGetterSetter(MyPropertyBuilder? getterExpressionBuilder, MyPropertyBuilder? setterExpressionBuilder)
+        {
+            _myProperty.ExpandCodeBlock = true;
+            if (getterExpressionBuilder != null)
+            {
+                _myProperty.GetterExpression = getterExpressionBuilder.ToString();
+            }
+            if (setterExpressionBuilder != null)
+            {
+                _myProperty.SetterExpression = setterExpressionBuilder.ToString();
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Convert this property to result code string with default formatter.
+        /// </summary>
+        /// <returns></returns>
+        public override string? ToString()
+        {
+            return ToString(new MyDefaultPropertyDeclarationFormatter());
+        }
+
+        /// <summary>
+        /// Convert this property to result code string with assigned formatter.
+        /// </summary>
+        /// <returns></returns>
         public string? ToString(IFormatter<MyProperty> formatter)
         {
             return formatter?.ToString(Build());

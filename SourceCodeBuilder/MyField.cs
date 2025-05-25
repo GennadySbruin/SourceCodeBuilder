@@ -8,12 +8,66 @@ namespace SourceCodeBuilder
 {
     public class MyField
     {
-        public string? FieldName { get; set; }
-        public string? FieldTypeName { get; set; }
-        public string? InitialExpression { get; set; }
 
-        public MyCodeExpressionBuilder? SetExpresion { get; set; }
+        /// <summary>
+        /// Field name
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// private string FieldName;
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public string? FieldName;
 
+        /// <summary>
+        /// Name of field type
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// private FieldTypeName Field;
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public string? FieldTypeName;
+
+        /// <summary>
+        /// Field initial expression
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// string Code = "InitialExpression";
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public string? InitialExpression;
+
+        /// <summary>
+        /// Field starting tab
+        /// <example>
+        /// <para>Example 1: without tab</para>
+        /// <code>
+        /// string Code;
+        /// </code>
+        /// </example>
+        /// <example>
+        /// <para>Example 2: with tab</para>
+        /// <code>
+        ///     string Code;
+        /// </code>
+        /// </example>
+        /// <example>
+        /// <para>Example 3: with 2 tab</para>
+        /// <code>
+        ///         string Code ;
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        //public string Tabs = string.Empty;
         public List<AccessModifiers?> AccessModifiersList { get; set; } = [];
         public enum AccessModifiers
         {
@@ -33,7 +87,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.String("Description").ToString();
         /// </code>
         /// result:
-        /// <para><c>string Description { get; set; }</c></para>
+        /// <para><c>string Description;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -48,7 +102,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.Int("Count").ToString();
         /// </code>
         /// result:
-        /// <para><c>int Count { get; set; }</c></para>
+        /// <para><c>int Count;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -63,7 +117,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.Guid("RecordId").ToString();
         /// </code>
         /// result:
-        /// <para><c>Guid RecordId { get; set; }</c></para>
+        /// <para><c>Guid RecordId;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -78,7 +132,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.Decimal("Amount").ToString();
         /// </code>
         /// result:
-        /// <para><c>decimal Amount { get; set; }</c></para>
+        /// <para><c>decimal Amount;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -93,7 +147,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.DateTime("LastUpdateDateTime").ToString();
         /// </code>
         /// result:
-        /// <para><c>DateTime LastUpdateDateTime { get; set; }</c></para>
+        /// <para><c>DateTime LastUpdateDateTime;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -108,7 +162,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.Double("Total").ToString();
         /// </code>
         /// result:
-        /// <para><c>double Total { get; set; }</c></para>
+        /// <para><c>double Total;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -124,7 +178,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.Float("Value").ToString();
         /// </code>
         /// result:
-        /// <para><c>float Value { get; set; }</c></para>
+        /// <para><c>float Value;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -139,7 +193,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.Boolean("IsFinished").ToString();
         /// </code>
         /// result:
-        /// <para><c>bool IsFinished { get; set; }</c></para>
+        /// <para><c>bool IsFinished;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -154,7 +208,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.Byte("IsFinished").ToString();
         /// </code>
         /// result:
-        /// <para><c>byte IsFinished { get; set; }</c></para>
+        /// <para><c>byte IsFinished;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -172,7 +226,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.PublicString("Description").ToString();
         /// </code>
         /// result:
-        /// <para><c>public string Description { get; set; }</c></para>
+        /// <para><c>public string Description;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -187,7 +241,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.PublicInt("Count").ToString();
         /// </code>
         /// result:
-        /// <para><c>public int Count { get; set; }</c></para>
+        /// <para><c>public int Count;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -202,7 +256,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.PublicGuid("RecordId").ToString();
         /// </code>
         /// result:
-        /// <para><c>public Guid RecordId { get; set; }</c></para>
+        /// <para><c>public Guid RecordId;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -217,7 +271,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.PublicDecimal("Amount").ToString();
         /// </code>
         /// result:
-        /// <para><c>public decimal Amount { get; set; }</c></para>
+        /// <para><c>public decimal Amount;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -232,7 +286,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.PublicDateTime("LastUpdateDateTime").ToString();
         /// </code>
         /// result:
-        /// <para><c>public DateTime LastUpdateDateTime { get; set; }</c></para>
+        /// <para><c>public DateTime LastUpdateDateTime;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -247,7 +301,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.PublicDouble("Total").ToString();
         /// </code>
         /// result:
-        /// <para><c>public double Total { get; set; }</c></para>
+        /// <para><c>public double Total;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -263,7 +317,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.PublicFloat("Value").ToString();
         /// </code>
         /// result:
-        /// <para><c>public float Value { get; set; }</c></para>
+        /// <para><c>public float Value;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -278,7 +332,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.PublicBoolean("IsFinished").ToString();
         /// </code>
         /// result:
-        /// <para><c>public bool IsFinished { get; set; }</c></para>
+        /// <para><c>public bool IsFinished;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -293,7 +347,7 @@ namespace SourceCodeBuilder
         /// MyFieldBuilder.PublicByte("IsFinished").ToString();
         /// </code>
         /// result:
-        /// <para><c>public byte IsFinished { get; set; }</c></para>
+        /// <para><c>public byte IsFinished;</c></para>
         /// </example>
         /// </summary>
         /// <returns></returns>
@@ -303,7 +357,8 @@ namespace SourceCodeBuilder
 
         public override string? ToString()
         {
-            return ToString(MyDefaultFieldDeclarationFormatter.Formatter);
+            //return ToString(new MyDefaultFieldDeclarationFormatter() { DefaultTabs = Tabs});
+            return ToString(new MyDefaultFieldDeclarationFormatter());
         }
 
         public string? ToString(IFormatter<MyField> formatter)

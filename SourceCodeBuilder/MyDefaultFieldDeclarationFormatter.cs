@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace SourceCodeBuilder
     public class MyDefaultFieldDeclarationFormatter : IFormatter<MyField>
     {
         private static IFormatter<MyField>? s_instance;
-
+        private readonly System.Threading.Lock _writerLock = new();
         /// <summary>
         /// Reusable static formatter
         /// </summary>
@@ -28,7 +29,7 @@ namespace SourceCodeBuilder
         }
 
         private bool _hasValue;
-        public virtual string DefaultTabs { get; set; } = "        ";
+        public virtual string _defaultTabs { get; set; }
 
         private const string Space = " ";
         private string _
@@ -42,11 +43,10 @@ namespace SourceCodeBuilder
                 else
                 {
                     _hasValue = true;
-                    return DefaultTabs;
+                    return _defaultTabs;
                 }
             }
         }
-
         public void Clear()
         {
             _hasValue = false;
@@ -57,53 +57,78 @@ namespace SourceCodeBuilder
             {
                 throw new ArgumentNullException("MyField o");
             }
-
-            StringBuilder stringBuilder = new ();
-            SetAccessModifiers(o, stringBuilder);
-            SetType(o, stringBuilder);
-            SetName(o, stringBuilder);
-            StartDefaultSetter(o, stringBuilder);
-            EndSetter(o, stringBuilder);
-            return stringBuilder.ToString();
+            using MemoryStream memoryStream = new MemoryStream();
+            using StreamWriter streamWriter = new StreamWriter(memoryStream);
+            GenerateCode(o, streamWriter);
+            streamWriter.Flush();
+            return Encoding.ASCII.GetString(memoryStream.ToArray());
         }
 
-        public virtual void SetAccessModifiers(MyField o, StringBuilder stringBuilder)
+        TextWriter _writer;
+        public void GenerateCode(MyField o, TextWriter writer, string tabs = "")
         {
-            foreach(var a in o.AccessModifiersList)
+            if (o == null)
             {
-                stringBuilder.Append($"{_}{AccessModifierToString(a)}");
+                throw new ArgumentNullException("MyField o");
+            }
+            lock (_writerLock)
+            {
+                Clear();
+                _defaultTabs = tabs;
+                _writer = writer;
+                WriteCode(o);
             }
         }
 
-        public virtual void SetType(MyField o, StringBuilder stringBuilder)
+        private void WriteCode(MyField o)
         {
-            stringBuilder.Append($"{_}{o.FieldTypeName}");
+            SetAccessModifiers(o);
+            SetType(o);
+            SetName(o);
+            StartDefaultSetter(o);
+            EndSetter(o);
         }
 
-        public virtual void SetName(MyField o, StringBuilder stringBuilder)
+        public virtual void SetAccessModifiers(MyField o)
         {
-            stringBuilder.Append($"{_}{o.FieldName}");
+            foreach(var a in o.AccessModifiersList)
+            {
+                Write($"{_}{AccessModifierToString(a)}");
+            }
         }
 
-        public virtual void StartDefaultSetter(MyField o, StringBuilder stringBuilder)
+        public virtual void SetType(MyField o)
+        {
+            Write($"{_}{o.FieldTypeName}");
+        }
+
+        public virtual void SetName(MyField o)
+        {
+            Write($"{_}{o.FieldName}");
+        }
+
+        public virtual void StartDefaultSetter(MyField o)
         {
             if(o.InitialExpression == null)
             {
                 return;
             }
-            string defaultStartGetterSetterStatement = "=";
-            stringBuilder.Append($"{_}{defaultStartGetterSetterStatement}{_}{o.InitialExpression}");
+            Write($"{_}={_}{o.InitialExpression}");
         }
 
-        public virtual void EndSetter(MyField o, StringBuilder stringBuilder)
+        public virtual void EndSetter(MyField o)
         {
-            string defaultStartGetterSetterStatement = ";";
-            stringBuilder.Append(defaultStartGetterSetterStatement);
+            Write(";");
         }
 
         public virtual string? AccessModifierToString(MyField.AccessModifiers? accessModifier)
         {
             return accessModifier?.ToString()?.ToLower();
+        }
+
+        private void Write(string value)
+        {
+            _writer.Write(value.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs));
         }
     }
 }

@@ -8,9 +8,85 @@ namespace SourceCodeBuilder
 {
     public class MyProperty
     {
+        /// <summary>
+        /// Property name
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// private string PropertyName { get ; set; };
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
         public string? PropertyName { get; set; }
+
+        /// <summary>
+        /// Name of property type
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// private PropertyTypeName Property { get ; set; };
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
         public string? PropertyTypeName { get; set; }
+
+        /// <summary>
+        /// Property initial expression
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// string Code { get ; set; } = "InitialExpression";
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
         public string? InitialExpression { get; set; }
+
+        /// <summary>
+        /// Property lambda getter expresion
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// public string Code => "LambdaExpression";
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public string? LambdaExpression { get; set; }
+
+        /// <summary>
+        /// Property starting tab
+        /// <example>
+        /// <para>Example 1: without tab</para>
+        /// <code>
+        /// string Code { get ; set; };
+        /// </code>
+        /// </example>
+        /// <example>
+        /// <para>Example 2: with tab</para>
+        /// <code>
+        ///     string Code { get ; set; };
+        /// </code>
+        /// </example>
+        /// <example>
+        /// <para>Example 3: with 2 tab</para>
+        /// <code>
+        ///         string Code { get ; set; };
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        //public string Tabs = string.Empty;
+
+        public bool ExpandCodeBlock { get; set; } = false;
+        public bool WithSetter { get; set; } = true;
+        public bool WithGetter { get; set; } = true;
+
+        public string? GetterExpression { get; set; }
+        public string? SetterExpression { get; set; }
+        
 
         public List<AccessModifiers?> AccessModifiersList { get; set; } = [];
         public enum AccessModifiers
@@ -305,7 +381,8 @@ namespace SourceCodeBuilder
 
         public override string? ToString()
         {
-            return ToString(MyDefaultPropertyDeclarationFormatter.Formatter);
+            //return ToString(new MyDefaultPropertyDeclarationFormatter() { DefaultTabs = Tabs});
+            return ToString(new MyDefaultPropertyDeclarationFormatter());
         }
 
         public string? ToString(IFormatter<MyProperty> formatter)

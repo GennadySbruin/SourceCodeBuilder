@@ -10,7 +10,7 @@ namespace SourceCodeBuilder
     public class MyDefaultPropertyDeclarationFormatter : IFormatter<MyProperty>
     {
         private static IFormatter<MyProperty>? s_instance;
-
+        private readonly System.Threading.Lock _writerLock = new();
         /// <summary>
         /// Reusable static formatter
         /// </summary>
@@ -28,9 +28,14 @@ namespace SourceCodeBuilder
         }
 
         private bool _hasValue;
-        public virtual string DefaultTabs { get; set; } = "        ";
+        private string _defaultTabs { get; set; }
 
         private const string Space = " ";
+        private const string defaultStartCodeBlockStatement = "{";
+        private const string defaultEndCodeBlockStatement = "}";
+
+        private StringBuilder _stringBuilder;
+        private TextWriter _textWriter;
         private string _
         {
             get
@@ -42,7 +47,7 @@ namespace SourceCodeBuilder
                 else
                 {
                     _hasValue = true;
-                    return DefaultTabs;
+                    return _defaultTabs;
                 }
             }
         }
@@ -58,63 +63,173 @@ namespace SourceCodeBuilder
                 throw new ArgumentNullException("MyProperty o");
             }
 
-            StringBuilder stringBuilder = new ();
-            SetAccessModifiers(o, stringBuilder);
-            SetType(o, stringBuilder);
-            SetName(o, stringBuilder);
-            StartGetterSetterBlock(o, stringBuilder);
-            SetGetter(o, stringBuilder);
-            SetSetter(o, stringBuilder);
-            FinishGetterSetterBlock(o, stringBuilder);
-
-            return stringBuilder.ToString();
+            using MemoryStream memoryStream = new MemoryStream();
+            using StreamWriter streamWriter = new StreamWriter(memoryStream);
+            GenerateCode(o, streamWriter);
+            streamWriter.Flush();
+            return Encoding.ASCII.GetString(memoryStream.ToArray());
         }
 
-        public virtual void SetAccessModifiers(MyProperty o, StringBuilder stringBuilder)
+        TextWriter _writer;
+        public void GenerateCode(MyProperty o, TextWriter writer, string tabs = "")
+        {
+            if (o == null)
+            {
+                throw new ArgumentNullException("MyField o");
+            }
+            lock (_writerLock)
+            {
+                Clear();
+                _defaultTabs = tabs;
+                _writer = writer;
+                WriteCode(o);
+            }
+        }
+        private void WriteCode(MyProperty o)
+        {
+            SetAccessModifiers(o);
+            SetType(o);
+            SetName(o);
+            StartGetterSetterBlock(o);
+            SetGetter(o);
+            SetSetter(o);
+            FinishGetterSetterBlock(o);
+            StartDefaultSetter(o);
+        }
+        public virtual void SetAccessModifiers(MyProperty o)
         {
             foreach(var a in o.AccessModifiersList)
             {
-                stringBuilder.Append($"{_}{AccessModifierToString(a)}");
+                Write($"{_}{AccessModifierToString(a)}");
             }
         }
 
-        public virtual void SetType(MyProperty o, StringBuilder stringBuilder)
+        public virtual void SetType(MyProperty o)
         {
-            stringBuilder.Append($"{_}{o.PropertyTypeName}");
+            Write($"{_}{o.PropertyTypeName}");
         }
 
-        public virtual void SetName(MyProperty o, StringBuilder stringBuilder)
+        public virtual void SetName(MyProperty o)
         {
-            stringBuilder.Append($"{_}{o.PropertyName}");
+            Write($"{_}{o.PropertyName}");
         }
 
-        public virtual void StartGetterSetterBlock(MyProperty o, StringBuilder stringBuilder)
+        public virtual void StartGetterSetterBlock(MyProperty o)
         {
-            string defaultStartGetterSetterStatement = "{";
-            stringBuilder.Append($"{_}{defaultStartGetterSetterStatement}");
+            if (o.ExpandCodeBlock)
+            {
+                Write(Environment.NewLine);
+                Write($"{_defaultTabs}{defaultStartCodeBlockStatement}");
+            }
+            else
+            {
+                Write($"{_}{defaultStartCodeBlockStatement}");
+            }
+            
         }
 
-        public virtual void SetGetter(MyProperty o, StringBuilder stringBuilder)
+        public virtual void SetGetter(MyProperty o)
         {
-            string defaultGetStatement = "get;";
-            stringBuilder.Append($"{_}{defaultGetStatement}");
+            if (o.WithGetter)
+            {
+                if (string.IsNullOrEmpty(o.GetterExpression))
+                {
+                    string defaultGetStatement = "get;";
+                    Write($"{_}{defaultGetStatement}");
+                }
+                else
+                {
+                    if (o.ExpandCodeBlock)
+                    {
+                        Write(Environment.NewLine);
+                        Write($"{_defaultTabs}    get");
+                        Write(Environment.NewLine);
+                        Write($"{_defaultTabs}    {defaultStartCodeBlockStatement}");
+                        Write(Environment.NewLine);
+                        Write($"{_defaultTabs}        {o.GetterExpression}");
+                        if (!o.WithSetter)
+                        {
+                            Write(Environment.NewLine);
+                            Write($"{_defaultTabs}    {defaultEndCodeBlockStatement}");
+                        }
+                    }
+                    else
+                    {
+                        Write(o.GetterExpression);
+                    }
+                    
+                }
+            }
+            
         }
         
-        public virtual void SetSetter(MyProperty o, StringBuilder stringBuilder)
+        public virtual void SetSetter(MyProperty o)
         {
-            string defaultGetStatement = "set;";
-            stringBuilder.Append($"{_}{defaultGetStatement}");
+            if (o.WithSetter)
+            {
+                if (string.IsNullOrEmpty(o.SetterExpression))
+                {
+                    string defaultGetStatement = "set;";
+                    Write($"{_}{defaultGetStatement}");
+                }
+                else
+                {
+                    if (o.ExpandCodeBlock)
+                    {
+                        if (o.WithGetter)
+                        {
+                            Write(Environment.NewLine);
+                            Write($"{_defaultTabs}    {defaultEndCodeBlockStatement}");
+                        }
+                        Write(Environment.NewLine);
+                        Write($"{_defaultTabs}    set");
+                        Write(Environment.NewLine);
+                        Write($"{_defaultTabs}    {defaultStartCodeBlockStatement}");
+                        Write(Environment.NewLine);
+                        Write($"{_defaultTabs}        {o.SetterExpression}");
+                        Write(Environment.NewLine);
+                        Write($"{_defaultTabs}    {defaultEndCodeBlockStatement}");
+                    }
+                    else
+                    {
+                        Write(o.SetterExpression);
+                    }
+                        
+                }
+            }
         }
 
-        public virtual void FinishGetterSetterBlock(MyProperty o, StringBuilder stringBuilder)
+        public virtual void FinishGetterSetterBlock(MyProperty o)
         {
-            string defaultFinishGetterSetterStatement = "}";
-            stringBuilder.Append($"{_}{defaultFinishGetterSetterStatement}");
+            if (o.ExpandCodeBlock)
+            {
+                Write(Environment.NewLine);
+                Write($"{_defaultTabs}{defaultEndCodeBlockStatement}");
+                Write(Environment.NewLine);
+            }
+            else
+            {
+                Write($"{_}{defaultEndCodeBlockStatement}");
+            }
+            
         }
 
+        public virtual void StartDefaultSetter(MyProperty o)
+        {
+            if (o.InitialExpression == null)
+            {
+                return;
+            }
+            Write($"{_}={_}{o.InitialExpression};");
+        }
         public virtual string? AccessModifierToString(MyProperty.AccessModifiers? accessModifier)
         {
             return accessModifier?.ToString()?.ToLower();
+        }
+
+        private void Write(string value)
+        {
+            _writer.Write(value.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs));
         }
     }
 }

@@ -18,17 +18,93 @@ namespace SourceCodeBuilder
             StringExpression = stringExpression;
         }
 
-        internal void BuildCode(StringBuilder builder)
+        internal void BuildCode(StringBuilder builder, string _defaultTabs = "")
         {
-            builder.Append(StringExpression);
+            if (!string.IsNullOrEmpty(StringExpression))
+            {
+                if (StringExpression == Environment.NewLine)
+                {
+                    builder.Append(StringExpression);
+                }
+                else
+                {
+                    builder.Append(StringExpression.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs));
+                }
+                    
+            }
             foreach (var expression in Expressions) 
             { 
-                expression.BuildCode(builder);
+                expression.BuildCode(builder, _defaultTabs);
+            }
+        }
+
+        internal void BuildCode(TextWriter writer, string _defaultTabs = "")
+        {
+            if (!string.IsNullOrEmpty(StringExpression))
+            {
+                if(StringExpression == Environment.NewLine)
+                {
+                    writer.Write(StringExpression + _defaultTabs);
+                }
+                else
+                {
+                    writer.Write(StringExpression.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs));
+                }
+                
+            }
+            
+            foreach (var expression in Expressions)
+            {
+                expression.BuildCode(writer, _defaultTabs);
             }
         }
 
         /// <summary>
-        /// Expression with spaces '='
+        /// Expression '+'
+        /// <example>
+        /// <code>
+        /// +
+        /// int i = 2 + 2;
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression PlusExpression { get; set; } = new MyCodeExpression("+");
+
+        /// <summary>
+        /// Expression '-'
+        /// <example>
+        /// <code>
+        /// -
+        /// int i = 2 - 2;
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression MinusExpression { get; set; } = new MyCodeExpression("-");
+
+        /// <summary>
+        /// Expression '*'
+        /// <example>
+        /// <code>
+        /// *
+        /// int i = 2 * 2;
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression MultiplyExpression { get; set; } = new MyCodeExpression("*");
+
+        /// <summary>
+        /// Expression '/'
+        /// <example>
+        /// <code>
+        /// /
+        /// double d = 2 / 20;
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression DivideExpression { get; set; } = new MyCodeExpression("/");
+        
+        /// <summary>
+        /// Expression '='
         /// <example>
         /// <code>
         /// =
@@ -47,7 +123,7 @@ namespace SourceCodeBuilder
         /// </code>
         /// </example>
         /// </summary>
-        public static MyCodeExpression EqExpression { get; set; } = new MyCodeExpression("==");
+        public static MyCodeExpression EqualsExpression { get; set; } = new MyCodeExpression("==");
 
         /// <summary>
         /// Expression '&'
@@ -58,7 +134,7 @@ namespace SourceCodeBuilder
         /// </code>
         /// </example>
         /// </summary>
-        public static MyCodeExpression EqualsExpression { get; set; } = new MyCodeExpression("&");
+        public static MyCodeExpression AndExpression { get; set; } = new MyCodeExpression("&");
 
         /// <summary>
         /// Expression '&&'
@@ -166,7 +242,7 @@ namespace SourceCodeBuilder
         /// </code>
         /// </example>
         /// </summary>
-        public static MyCodeExpression NewLineCodeBlockExpression { get; set; } = new MyCodeExpression(Environment.NewLine);
+        public static MyCodeExpression NewLineExpression { get; set; } = new MyCodeExpression(Environment.NewLine);
 
         /// <summary>
         /// Space expression ' '
@@ -177,7 +253,7 @@ namespace SourceCodeBuilder
         /// </code>
         /// </example>
         /// </summary>
-        public static MyCodeExpression SpaceCodeBlockExpression { get; set; } = new MyCodeExpression(" ");
+        public static MyCodeExpression SpaceExpression { get; set; } = new MyCodeExpression(" ");
 
         /// <summary>
         /// Tab expression '  '
@@ -188,7 +264,7 @@ namespace SourceCodeBuilder
         /// </code>
         /// </example>
         /// </summary>
-        public static MyCodeExpression Tab2CodeBlockExpression { get; set; } = new MyCodeExpression("  ");
+        public static MyCodeExpression Tab2Expression { get; set; } = new MyCodeExpression("  ");
 
         /// <summary>
         /// Tab expression '    '
@@ -199,7 +275,59 @@ namespace SourceCodeBuilder
         /// </code>
         /// </example>
         /// </summary>
-        public static MyCodeExpression TabCodeBlockExpression { get; set; } = new MyCodeExpression("    ");
+        public static MyCodeExpression TabExpression { get; set; } = new MyCodeExpression("    ");
+
+        /// <summary>
+        /// Finish line expression ';'
+        /// <example>
+        /// <code>
+        /// ;
+        /// ...;
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression FinishLineExpression { get; set; } = new MyCodeExpression(";");
+
+        /// <summary>
+        /// Dot '.'
+        /// <example>
+        /// <code>
+        /// .
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression DotExpression { get; set; } = new MyCodeExpression(".");
+
+        /// <summary>
+        /// Comma ','
+        /// <example>
+        /// <code>
+        /// ,
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression CommaExpression { get; set; } = new MyCodeExpression(",");
+
+        /// <summary>
+        /// DoubleQuote '"'
+        /// <example>
+        /// <code>
+        /// "
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression DoubleQuoteExpression { get; set; } = new MyCodeExpression("\"");
+
+        /// <summary>
+        /// Quote '''
+        /// <example>
+        /// <code>
+        /// '
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression QuoteExpression { get; set; } = new MyCodeExpression("'");
+
 
         internal MyCodeExpression Add(MyCodeExpression expression)
         {
@@ -209,6 +337,17 @@ namespace SourceCodeBuilder
         internal MyCodeExpression Add(MyCodeExpressionBuilder expressionBuilder)
         {
             Expressions.Add(expressionBuilder.Build());
+            return this;
+        }
+
+        internal MyCodeExpression Add(MyField expression)
+        {
+            Add(expression.ToString());
+            return this;
+        }
+        internal MyCodeExpression Add(MyFieldBuilder expressionBuilder)
+        {
+            Add(expressionBuilder.Build());
             return this;
         }
         internal MyCodeExpression Add(string expression)
@@ -229,8 +368,8 @@ namespace SourceCodeBuilder
         internal MyCodeExpression Else => Add(ElseConditionExpression);
         internal MyCodeExpression StartCodeBlock => Add(StartCodeBlockExpression);
         internal MyCodeExpression FinishCodeBlock => Add(FinishCodeBlockExpression);
-        internal MyCodeExpression NewLine => Add(NewLineCodeBlockExpression);
-        internal MyCodeExpression _ => Add(SpaceCodeBlockExpression);
+        internal MyCodeExpression NewLine => Add(NewLineExpression);
+        internal MyCodeExpression _ => Add(SpaceExpression);
         internal MyCodeExpression Tab => AddTabs(1);
         internal MyCodeExpression Tab2 => AddTabs(2);
         internal MyCodeExpression Tab3 => AddTabs(3);
@@ -251,6 +390,9 @@ namespace SourceCodeBuilder
         internal MyCodeExpression Tab18 => AddTabs(18);
         internal MyCodeExpression Tab19 => AddTabs(19);
         internal MyCodeExpression Tab20 => AddTabs(20);
+
+        internal MyCodeExpression Finish => Add(FinishLineExpression);
+        internal MyCodeExpression Dot => Add(DotExpression);
         internal MyCodeExpression This() => this;
 
 
@@ -258,7 +400,7 @@ namespace SourceCodeBuilder
         {
             for(int i = 0; i< count; i++)
             {
-                Add(TabCodeBlockExpression);
+                Add(TabExpression);
             }
             return this;
         }
@@ -268,6 +410,23 @@ namespace SourceCodeBuilder
             StringBuilder stringBuilder = new();
             BuildCode(stringBuilder);
             return stringBuilder.ToString();
+        }
+
+        internal bool HasCode()
+        {
+            if (!string.IsNullOrEmpty(StringExpression))
+            {
+                return true;
+            }
+
+            foreach (MyCodeExpression e in Expressions ?? [])
+            {
+                if (e.HasCode())
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -294,7 +294,7 @@ namespace SourceCodeBuilder
         /// <example>
         /// <para>For example:</para>
         /// <code>
-        /// MyFieldBuilder.Type("string").Name("Value").Init("Test").ToString();
+        /// MyFieldBuilder.Type("string").Name("Value").Init("\"Test\"").ToString();
         /// </code>
         /// result:
         /// <para><c>string Value = "Test";</c></para>
@@ -302,6 +302,24 @@ namespace SourceCodeBuilder
         /// </summary>
         /// <returns></returns>
         public MyFieldBuilder Init(string expression)
+        {
+            _myField.InitialExpression = $"{expression}";
+            return this;
+        }
+
+        /// <summary>
+        /// Set initial expression from string.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyFieldBuilder.Type("string").Name("Value").InitString("Test").ToString();
+        /// </code>
+        /// result:
+        /// <para><c>string Value = "Test";</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyFieldBuilder InitString(string expression)
         {
             _myField.InitialExpression = $"\"{expression}\"";
             return this;
@@ -417,7 +435,7 @@ namespace SourceCodeBuilder
 
         public override string? ToString()
         {
-            return ToString(MyDefaultFieldDeclarationFormatter.Formatter);
+            return ToString(new MyDefaultFieldDeclarationFormatter());
         }
 
         public string? ToString(IFormatter<MyField> formatter)

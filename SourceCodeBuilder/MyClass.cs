@@ -6,7 +6,7 @@
     /// <para>    Members</para>
     /// <para>}</para>    
     /// </summary>
-    public class MyClass :MyClassMember
+    public class MyClass
     {
         public MyNamespace? NameSpace { get; set; }
         public string? FileName { get; set; }
@@ -30,6 +30,8 @@
             Protected,
             Partial
         }
+
+        //public string Tabs = string.Empty;
 
         /// <summary>
         /// Class with private access. Use only for nested types
@@ -193,6 +195,7 @@
             }
         }
 
+
         public void AddField(MyField field)
         {
             if(Fields == null)
@@ -209,6 +212,26 @@
                 Properties = [];
             }
             Properties.Add(property);
+        }
+
+        public void AddMethod(MyMethod method)
+        {
+            if (Methods == null)
+            {
+                Methods = [];
+            }
+            Methods.Add(method);
+        }
+
+        public override string? ToString()
+        {
+            //return ToString(new MyDefaultClassDeclarationFormatter() { DefaultTabs = Tabs});
+            return ToString(new MyDefaultClassDeclarationFormatter());
+        }
+
+        public string? ToString(IFormatter<MyClass> formatter)
+        {
+            return formatter?.ToString(this);
         }
     }
 }

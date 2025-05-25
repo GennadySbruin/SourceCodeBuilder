@@ -61,6 +61,76 @@ namespace SourceCodeBuilderTest
             TestContext.Write(_stringBuilder.ToString());
         }
 
+        [TestMethod]
+        public void TestProperties2()
+        {
+            string PropertyName = "PropertyName";
+            Assert.IsTrue(Test(MyProperty.String(PropertyName).Init("12fg"), "string PropertyName { get; set; } = \"12fg\";"));
+            Assert.IsTrue(Test(MyProperty.Int(PropertyName).Init(100), "int PropertyName { get; set; } = 100;"));
+            Assert.IsTrue(Test(MyProperty.Decimal(PropertyName).Init(100), "decimal PropertyName { get; set; } = 100;"));
+            Assert.IsTrue(Test(MyProperty.Double(PropertyName).Init(100), "double PropertyName { get; set; } = 100;"));
+            Assert.IsTrue(Test(MyProperty.Float(PropertyName).Init(100), "float PropertyName { get; set; } = 100;"));
+            Assert.IsTrue(Test(MyProperty.Boolean(PropertyName).Init(false), "bool PropertyName { get; set; } = false;"));
+
+            Assert.IsTrue(
+                Test(
+                    MyProperty.Int(PropertyName).Init(MyCodeExpressionBuilder.Start()
+                    .Add(3)._.Multiply._.Add(100))
+                    , "int PropertyName { get; set; } = 3 * 100;"));
+
+            TestContext.Write(_stringBuilder.ToString());
+        }
+
+
+        [TestMethod]
+        public void TestProperties3()
+        {
+            string PropertyName = "PropertyName";
+
+            Assert.IsTrue(
+                Test(
+                    MyProperty.Int(PropertyName).GetOnly
+                    , "int PropertyName { get; }"));
+            Assert.IsTrue(
+                Test(
+                    MyProperty.Int(PropertyName).SetOnly
+                    , "int PropertyName { set; }"));
+
+            Assert.IsTrue(
+                 Test(
+                     MyProperty.Int(PropertyName).GetOnly.GetterExpression(" get /*cats*/ { return _count;}")
+                     , "int PropertyName { get /*cats*/ { return _count;} }"));
+            Assert.IsTrue(
+                 Test(
+                     MyProperty.Int(PropertyName).SetOnly.SetterExpression(" set /*cats*/ { _count = value;}")
+                     , "int PropertyName { set /*cats*/ { _count = value;} }"));
+            Assert.IsTrue(
+                 Test(
+                     MyProperty.Int(PropertyName)
+                     .GetterExpression(" get /*cats*/ { return _count;}")
+                     .SetterExpression(" set /*cats*/ { _count = value;}")
+                     , "int PropertyName { get /*cats*/ { return _count;} set /*cats*/ { _count = value;} }"));
+            Assert.IsTrue(
+                 Test(
+                     MyProperty.Int(PropertyName)
+                     .GetterExpression(MyCodeExpressionBuilder.Start()
+                     .NewLine.Tab.Add("get")
+                         .NewLine.Tab.CodeBlock
+                            .NewLine.Tab.Tab.Add(" return _count;")
+                         .NewLine.Tab.FinishCodeBlock
+                     .NewLine)
+                     .SetterExpression(" set /*cats*/ { _count = value;}")
+                     , "int PropertyName {\r\n    get\r\n    {\r\n         return _count;\r\n    }\r\n set /*cats*/ { _count = value;} }"));
+            Assert.IsTrue(
+                 Test(
+                     MyProperty.Int(PropertyName)
+                     .ExpandGetterSetter(
+                         "return _count;",
+                         "_count = 1value;\r\n        _count++;")
+                     , "int PropertyName\r\n{\r\n    get\r\n    {\r\n        return _count;\r\n    }\r\n    set\r\n    {\r\n        _count = 1value;\r\n        _count++;\r\n    }\r\n}"));
+            TestContext.Write(_stringBuilder.ToString());
+        }
+
         private bool Test(MyPropertyBuilder builder, string code)
         {
             string result = builder.ToString().Trim();
@@ -77,10 +147,6 @@ namespace SourceCodeBuilderTest
             
         }
 
-        private class TestClass
-        {
-            protected string s;
-            //public virtual string s;
-        }
+
     }
 }

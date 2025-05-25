@@ -4,37 +4,45 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace SourceCodeBuilder.CodeExpressions
 {
-    public class IfCodeBlockElseIfExpressionBuilder : IExpressionBuilder
+    public class MethodCodeBlockExpressionBuilder : IExpressionBuilder
     {
         MyCodeExpression _myCode;
-        internal readonly IfExpressionBuilder IfExpressionBuilder;
+        internal readonly MyClassBuilder ClassBuilder;
         internal string Tabs = string.Empty;
-
         public MyCodeExpression Build()
         {
             return _myCode;
         }
 
-        public IfCodeBlockElseIfExpressionBuilder(IfExpressionBuilder source, MyCodeExpression myCodeExpression)
+        public MethodCodeBlockExpressionBuilder(MyClassBuilder source, MyCodeExpression myCodeExpression)
         {
-            IfExpressionBuilder = source;
+            ClassBuilder = source;
             _myCode = myCodeExpression;
             Tabs += source.Tabs;
         }
 
-        public IfCodeBlockElseIfExpressionBuilder AddLine(string codeLine)
+        public MethodCodeBlockExpressionBuilder AddLine(string codeLine)
         {
             _myCode.NewLine.Add(Tabs).Tab.Add(codeLine);
             return this;
         }
-        public IfCodeBlockElseIfExpressionBuilder AddCode(MyCodeExpression expression)
+
+        public MethodCodeBlockExpressionBuilder AddCode(MyCodeExpression expression)
         {
             _myCode.Add(expression);
             return this;
+        }
+
+        public MyClassBuilder EndMethod
+        {
+            get
+            {
+                _myCode.NewLine.Add(Tabs).FinishCodeBlock.This();
+                return ClassBuilder;
+            }
         }
     }
 

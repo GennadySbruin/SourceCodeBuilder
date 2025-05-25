@@ -44,7 +44,7 @@ namespace SourceCodeBuilder
             StringBuilder tagBuilder = new ();
             for (int i = 0; i < tabsCount; i++)
             {
-                tagBuilder.Append(MyCodeExpression.TabCodeBlockExpression.StringExpression);
+                tagBuilder.Append(MyCodeExpression.TabExpression.StringExpression);
             }
             return new MyCodeExpressionBuilder(tagBuilder.ToString());
         }
@@ -69,14 +69,71 @@ namespace SourceCodeBuilder
             
         }
 
-        public MyCodeExpressionBuilder NewLine => Add(MyCodeExpression.NewLineCodeBlockExpression);
 
-        private MyCodeExpressionBuilder Add(MyCodeExpression expression)
+        public MyCodeExpressionBuilder NewLine => Add(MyCodeExpression.NewLineExpression);
+        public MyCodeExpressionBuilder CodeBlock => Add(MyCodeExpression.StartCodeBlockExpression);
+        public MyCodeExpressionBuilder FinishCodeBlock => Add(MyCodeExpression.FinishCodeBlockExpression);
+        public MyCodeExpressionBuilder _ => Add(MyCodeExpression.SpaceExpression);
+        public MyCodeExpressionBuilder Tab => Add(MyCodeExpression.TabExpression);
+        public MyCodeExpressionBuilder And => Add(MyCodeExpression.AndAndExpression);
+        public MyCodeExpressionBuilder AndAnd => Add(MyCodeExpression.AndAndExpression);
+        public MyCodeExpressionBuilder CloseBracket => Add(MyCodeExpression.CloseBracketExpression);
+        public MyCodeExpressionBuilder Equals => Add(MyCodeExpression.EqualsExpression);
+        public MyCodeExpressionBuilder OpenBracket => Add(MyCodeExpression.OpenBracketExpression);
+        public MyCodeExpressionBuilder Or => Add(MyCodeExpression.OrExpression);
+        public MyCodeExpressionBuilder OrOr => Add(MyCodeExpression.OrOrExpression);
+        public MyCodeExpressionBuilder Set => Add(MyCodeExpression.SetExpression);
+
+        public MyCodeExpressionBuilder Plus => Add(MyCodeExpression.PlusExpression);
+        public MyCodeExpressionBuilder Minus => Add(MyCodeExpression.MinusExpression);
+        public MyCodeExpressionBuilder Multiply => Add(MyCodeExpression.MultiplyExpression);
+        public MyCodeExpressionBuilder Divide => Add(MyCodeExpression.DivideExpression);
+
+        public MyCodeExpressionBuilder Finish => Add(MyCodeExpression.FinishLineExpression);
+        public MyCodeExpressionBuilder Dot => Add(MyCodeExpression.DotExpression);
+
+        public MyCodeExpressionBuilder Add(string expression)
         {
             _myCode.Add(expression);
             return this;
         }
-        private MyCodeExpressionBuilder Add(MyCodeExpressionBuilder expressionBuilder)
+
+        public MyCodeExpressionBuilder Add(int expression)
+        {
+            _myCode.Add(expression.ToString());
+            return this;
+        }
+
+        public MyCodeExpressionBuilder Add(double expression)
+        {
+            _myCode.Add(expression.ToString());
+            return this;
+        }
+
+        public MyCodeExpressionBuilder Add(decimal expression)
+        {
+            _myCode.Add(expression.ToString());
+            return this;
+        }
+
+        public MyCodeExpressionBuilder Add(float expression)
+        {
+            _myCode.Add(expression.ToString());
+            return this;
+        }
+
+        public MyCodeExpressionBuilder Add(bool expression)
+        {
+            _myCode.Add(expression ? "true" : "false");
+            return this;
+        }
+
+        public MyCodeExpressionBuilder Add(MyCodeExpression expression)
+        {
+            _myCode.Add(expression);
+            return this;
+        }
+        public MyCodeExpressionBuilder Add(MyCodeExpressionBuilder expressionBuilder)
         {
             _myCode.Add(expressionBuilder);
             return this;

@@ -65,14 +65,25 @@ namespace SourceCodeBuilderTest
         public void TestFields2()
         {
             string FieldName = "FieldName";
-            Assert.IsTrue(Test(MyField.String(FieldName).Init("12fg"), "string FieldName = \"12fg\";"));
+            Assert.IsTrue(Test(MyField.String(FieldName).Init("\"12fg\""), "string FieldName = \"12fg\";"));
+            Assert.IsTrue(Test(MyField.String(FieldName).InitString("12fg"), "string FieldName = \"12fg\";"));
             Assert.IsTrue(Test(MyField.Int(FieldName).Init(100), "int FieldName = 100;"));
             Assert.IsTrue(Test(MyField.Decimal(FieldName).Init(100), "decimal FieldName = 100;"));
             Assert.IsTrue(Test(MyField.Double(FieldName).Init(100), "double FieldName = 100;"));
             Assert.IsTrue(Test(MyField.Float(FieldName).Init(100), "float FieldName = 100;"));
             Assert.IsTrue(Test(MyField.Boolean(FieldName).Init(false), "bool FieldName = false;"));
 
-            Assert.IsTrue(Test(MyField.Boolean(FieldName).Init(MyCodeExpressionBuilder.Start().), "bool FieldName = false;"));
+            Assert.IsTrue(
+                Test(
+                    MyField.Int(FieldName).Init(MyCodeExpressionBuilder.Start()
+                    .Add(3)._.Multiply._.Add(100))
+                    , "int FieldName = 3 * 100;"));
+
+            Assert.IsTrue(
+                    Test(
+                        MyField.Int(FieldName).Init(MyCodeExpressionBuilder.Start(0)
+                        .Add("3 * 100"))
+                        , "int FieldName = 3 * 100;"));
 
             TestContext.Write(_stringBuilder.ToString());
             
@@ -80,7 +91,7 @@ namespace SourceCodeBuilderTest
 
         private bool Test(MyFieldBuilder builder, string code)
         {
-            string result = builder.ToString().Trim();
+            string result = builder.ToString();
             _stringBuilder.AppendLine(result);
             if (result == code)
             {
