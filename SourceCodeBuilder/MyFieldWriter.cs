@@ -8,20 +8,20 @@ using System.Xml.Schema;
 
 namespace SourceCodeBuilder
 {
-    public class MyDefaultFieldDeclarationFormatter : IFormatter<MyField>
+    public class MyFieldWriter : ICodeWriter<MyField>
     {
-        private static IFormatter<MyField>? s_instance;
+        private static ICodeWriter<MyField>? s_instance;
         private readonly System.Threading.Lock _writerLock = new();
         /// <summary>
         /// Reusable static formatter
         /// </summary>
-        public static IFormatter<MyField> Formatter
+        public static ICodeWriter<MyField> Formatter
         {
             get
             {
                 if (s_instance == null)
                 {
-                    s_instance = new MyDefaultFieldDeclarationFormatter();
+                    s_instance = new MyFieldWriter();
                 }
                 s_instance.Clear();
                 return s_instance;
@@ -29,7 +29,8 @@ namespace SourceCodeBuilder
         }
 
         private bool _hasValue;
-        public virtual string _defaultTabs { get; set; }
+        public string _defaultTabs = "    ";
+        public string _parentTabs = string.Empty;
 
         private const string Space = " ";
         private string _
@@ -43,7 +44,7 @@ namespace SourceCodeBuilder
                 else
                 {
                     _hasValue = true;
-                    return _defaultTabs;
+                    return _parentTabs;
                 }
             }
         }
@@ -51,7 +52,7 @@ namespace SourceCodeBuilder
         {
             _hasValue = false;
         }
-        public string ToString(MyField o)
+        public string WriteCode(MyField o)
         {
             if(o == null)
             {
@@ -64,7 +65,7 @@ namespace SourceCodeBuilder
             return Encoding.ASCII.GetString(memoryStream.ToArray());
         }
 
-        TextWriter _writer;
+        TextWriter? _writer = null;
         public void GenerateCode(MyField o, TextWriter writer, string tabs = "")
         {
             if (o == null)
@@ -74,20 +75,16 @@ namespace SourceCodeBuilder
             lock (_writerLock)
             {
                 Clear();
-                _defaultTabs = tabs;
+                _parentTabs = tabs;
                 _writer = writer;
-                WriteCode(o);
+                SetAccessModifiers(o);
+                SetType(o);
+                SetName(o);
+                StartDefaultSetter(o);
+                EndSetter(o);
             }
         }
 
-        private void WriteCode(MyField o)
-        {
-            SetAccessModifiers(o);
-            SetType(o);
-            SetName(o);
-            StartDefaultSetter(o);
-            EndSetter(o);
-        }
 
         public virtual void SetAccessModifiers(MyField o)
         {
@@ -126,9 +123,9 @@ namespace SourceCodeBuilder
             return accessModifier?.ToString()?.ToLower();
         }
 
-        private void Write(string value)
+        public virtual void Write(string value)
         {
-            _writer.Write(value.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs));
+            _writer?.Write(value.Replace(Environment.NewLine, Environment.NewLine + _parentTabs));
         }
     }
 }

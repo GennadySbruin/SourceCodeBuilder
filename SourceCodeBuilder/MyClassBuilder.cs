@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static SourceCodeBuilder.MyClassBuilder;
 
 namespace SourceCodeBuilder
 {
@@ -399,17 +400,98 @@ namespace SourceCodeBuilder
         }
 
         /// <summary>
-        /// Add method
+        /// Add class properties
         /// <example>
         /// <para>Example:</para>
         /// <code>
-        /////////////////////////////////////// MyClass.PublicClass("Program").AddMetho(MyField.String("Name")).ToString();
+        /// string[] ints = ["Length", "Length_01", "Length_02"];
+        /// MyClass.PublicClass("Program").AddProperties
+        ///         (ints.Select(o=> MyProperty.PublicInt(o).Init(o.Length))).ToString();
         /// </code>
         /// result:
         /// <code>
         /// public class Program
         /// {
-        ///     string Name;
+        ///     public int Length { get; set; } = 6;
+        ///     public int Length_01 { get; set; } = 9;
+        ///     public int Length_02 { get; set; } = 9;
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyClassBuilder AddProperties(IEnumerable<MyPropertyBuilder> propertyBiulders)
+        {
+            foreach(var p in propertyBiulders)
+            {
+                AddProperty(p);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Add class fields
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /// string[] ints = ["Length", "Length_01", "Length_02"];
+        /// MyClass.PublicClass("Program").AddField
+        ///         (ints.Select(o=> MyField.PublicInt(o).Init(o.Length))).ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// public class Program
+        /// {
+        ///     public int Length = 6;
+        ///     public int Length_01 = 9;
+        ///     public int Length_02 = 9;
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyClassBuilder AddFields(IEnumerable<MyFieldBuilder> fieldBiulders)
+        {
+            foreach (var f in fieldBiulders)
+            {
+                AddField(f);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Add class methods
+        /// </summary>
+        /// <param name="methodBiulders"></param>
+        /// <returns></returns>
+        public MyClassBuilder AddMethods(IEnumerable<MyMethodBuilder> methodBiulders)
+        {
+            foreach (var m in methodBiulders)
+            {
+                AddMethod(m);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Add method
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /// MyClass.PublicClass("Service")
+        ///        .AddMethod(MyMethod.PublicInt("Calc").Static
+        ///        .AddVariable(MyField.Int("constInt").Const.Init(100))
+        ///        .AddLine("return constInt * 8;")).Build().ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// public class Service
+        /// {
+        ///     public static int Calc(int number)
+        ///     {
+        ///         const int constInt = 100;
+        ///         return constInt * 8;
+        ///     }
         /// }
         /// </code>
         /// </example>
@@ -425,13 +507,20 @@ namespace SourceCodeBuilder
         /// <example>
         /// <para>Example:</para>
         /// <code>
-        /////////////////////////////////////// MyClass.PublicClass("Program").AddMetho(MyField.String("Name")).ToString();
+        /// MyClass.PublicClass("Service")
+        ///        .AddMethod(MyMethod.PublicInt("Calc").Static
+        ///        .AddVariable(MyField.Int("constInt").Const.Init(100))
+        ///        .AddLine("return constInt * 8;")).ToString();
         /// </code>
         /// result:
         /// <code>
-        /// public class Program
+        /// public class Service
         /// {
-        ///     string Name;
+        ///     public static int Calc(int number)
+        ///     {
+        ///         const int constInt = 100;
+        ///         return constInt * 8;
+        ///     }
         /// }
         /// </code>
         /// </example>
@@ -830,7 +919,5 @@ namespace SourceCodeBuilder
             }
         }
 
-
-        class TestClass<T, M> where T : class where M : class { }
     }
 }

@@ -417,6 +417,24 @@ namespace SourceCodeBuilder
         }
 
         /// <summary>
+        /// Set labmda getter expression.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyBuilder.Type("int").Name("Value").LambdaGetter(" => 4;").ToString();
+        /// </code>
+        /// result:
+        /// <para><c>int Value => 4;</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder LambdaGetter(string lambdaExpression)
+        {
+            _myProperty.LambdaExpression = lambdaExpression;
+            return this;
+        }
+
+        /// <summary>
         /// Set initial expression from double.
         /// <example>
         /// <para>For example:</para>
@@ -783,16 +801,16 @@ namespace SourceCodeBuilder
         /// <returns></returns>
         public override string? ToString()
         {
-            return ToString(new MyDefaultPropertyDeclarationFormatter());
+            return ToString(new MyPropertyWriter());
         }
 
         /// <summary>
         /// Convert this property to result code string with assigned formatter.
         /// </summary>
         /// <returns></returns>
-        public string? ToString(IFormatter<MyProperty> formatter)
+        public string? ToString(ICodeWriter<MyProperty> formatter)
         {
-            return formatter?.ToString(Build());
+            return formatter?.WriteCode(Build());
         }
     }
 }

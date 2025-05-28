@@ -212,6 +212,36 @@ namespace SourceCodeBuilder
         public static MyCodeExpression ElseConditionExpression { get; set; } = new MyCodeExpression("else");
 
         /// <summary>
+        /// Expression 'catch'
+        /// <example>
+        /// <code>
+        /// catch (Exception ex)
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression CatchConditionExpression { get; set; } = new MyCodeExpression("catch");
+
+        /// <summary>
+        /// Expression 'try'
+        /// <example>
+        /// <code>
+        /// try { }
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression TryConditionExpression { get; set; } = new MyCodeExpression("try");
+
+        /// <summary>
+        /// Expression 'finaly'
+        /// <example>
+        /// <code>
+        /// finaly { }
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression FinalyConditionExpression { get; set; } = new MyCodeExpression("finaly");
+
+        /// <summary>
         /// Expression '{'
         /// <example>
         /// <code>
@@ -366,6 +396,9 @@ namespace SourceCodeBuilder
         internal MyCodeExpression OpenBracket => Add(OpenBracketExpression);
         internal MyCodeExpression CloseBracket => Add(CloseBracketExpression);
         internal MyCodeExpression Else => Add(ElseConditionExpression);
+        internal MyCodeExpression Try => Add(TryConditionExpression);
+        internal MyCodeExpression Catch => Add(CatchConditionExpression);
+        internal MyCodeExpression Finaly => Add(FinalyConditionExpression);
         internal MyCodeExpression StartCodeBlock => Add(StartCodeBlockExpression);
         internal MyCodeExpression FinishCodeBlock => Add(FinishCodeBlockExpression);
         internal MyCodeExpression NewLine => Add(NewLineExpression);

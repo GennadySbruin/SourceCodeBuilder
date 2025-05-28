@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SourceCodeBuilder
 {
-    public interface IFormatter<T> where T : class
+    public interface ICodeWriter<T> where T : class
     {
-        string ToString(T o);
+        string WriteCode(T o);
         void Clear();
     }
 }

@@ -8,8 +8,6 @@
     /// </summary>
     public class MyClass
     {
-        public MyNamespace? NameSpace { get; set; }
-        public string? FileName { get; set; }
         public string? ClassName { get; set; }
         public List<string>? BaseClassList { get; set; }
         public Dictionary<string, string>? GenericConstraintDictionary { get; set; }
@@ -225,13 +223,12 @@
 
         public override string? ToString()
         {
-            //return ToString(new MyDefaultClassDeclarationFormatter() { DefaultTabs = Tabs});
-            return ToString(new MyDefaultClassDeclarationFormatter());
+            return ToString(new MyClassWriter());
         }
 
-        public string? ToString(IFormatter<MyClass> formatter)
+        public string? ToString(ICodeWriter<MyClass> formatter)
         {
-            return formatter?.ToString(this);
+            return formatter?.WriteCode(this);
         }
     }
 }

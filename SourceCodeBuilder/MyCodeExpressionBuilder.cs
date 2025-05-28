@@ -69,6 +69,15 @@ namespace SourceCodeBuilder
             
         }
 
+        public TryExpressionBuilder Try
+        {
+            get
+            {
+                _myCode.Add(Tabs).Add("try")
+                    .NewLine.Add(Tabs).StartCodeBlock.This();
+                return new TryExpressionBuilder(this, _myCode);
+            }
+        }
 
         public MyCodeExpressionBuilder NewLine => Add(MyCodeExpression.NewLineExpression);
         public MyCodeExpressionBuilder CodeBlock => Add(MyCodeExpression.StartCodeBlockExpression);

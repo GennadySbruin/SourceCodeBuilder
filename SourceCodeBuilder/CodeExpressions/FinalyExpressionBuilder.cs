@@ -1,55 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace SourceCodeBuilder.CodeExpressions
 {
-    public class MethodCodeBlockExpressionBuilder : IExpressionBuilder
+    public class FinalyExpressionBuilder
     {
-        MyCodeExpression _myCode;
-        internal readonly MyClassBuilder ClassBuilder;
+        MyCodeExpression _myCode = new();
+        internal readonly TryExpressionBuilder ParentExpressionBuilder;
         internal string Tabs = string.Empty;
         public MyCodeExpression Build()
         {
             return _myCode;
         }
 
-        public MethodCodeBlockExpressionBuilder(MyClassBuilder source, MyCodeExpression myCodeExpression)
+        public FinalyExpressionBuilder(TryExpressionBuilder source, MyCodeExpression myCodeExpression)
         {
-            ClassBuilder = source;
+            ParentExpressionBuilder = source;
             _myCode = myCodeExpression;
             Tabs += source.Tabs;
         }
 
-        public MethodCodeBlockExpressionBuilder AddLine(string codeLine)
+        public MyCodeExpressionBuilder EndTry
+        {
+            get
+            {
+                _myCode.NewLine.Add(Tabs).FinishCodeBlock.This();
+                return ParentExpressionBuilder.ParentExpressionBuilder;
+            }
+        }
+
+        public FinalyExpressionBuilder AddLine(string codeLine)
         {
             _myCode.NewLine.Add(Tabs).Tab.Add(codeLine);
             return this;
         }
-        public MethodCodeBlockExpressionBuilder AddCode(MyCodeExpression expression)
+        public FinalyExpressionBuilder AddCode(MyCodeExpression expression)
         {
             _myCode.Add(expression);
             return this;
         }
-        public MethodCodeBlockExpressionBuilder AddCode(MyCodeExpressionBuilder expressionBuilder)
+        public FinalyExpressionBuilder AddCode(MyCodeExpressionBuilder expressionBuilder)
         {
             _myCode.Add(expressionBuilder);
             return this;
         }
-        public MethodCodeBlockExpressionBuilder AddVariable(MyField field)
+        public FinalyExpressionBuilder AddVariable(MyField field)
         {
             _myCode.NewLine.Add(Tabs).Tab.Add(field);
             return this;
         }
-        public MethodCodeBlockExpressionBuilder AddVariable(MyFieldBuilder fieldBuilder)
+        public FinalyExpressionBuilder AddVariable(MyFieldBuilder fieldBuilder)
         {
             _myCode.NewLine.Add(Tabs).Tab.Add(fieldBuilder);
             return this;
         }
-        public MethodCodeBlockExpressionBuilder AddLines(IEnumerable<string> codeLines)
+        public FinalyExpressionBuilder AddLines(IEnumerable<string> codeLines)
         {
             foreach (var codeLine in codeLines)
             {
@@ -57,7 +66,7 @@ namespace SourceCodeBuilder.CodeExpressions
             }
             return this;
         }
-        public MethodCodeBlockExpressionBuilder AddCodes(IEnumerable<MyCodeExpression> expressions)
+        public FinalyExpressionBuilder AddCodes(IEnumerable<MyCodeExpression> expressions)
         {
             foreach (var expression in expressions)
             {
@@ -65,7 +74,7 @@ namespace SourceCodeBuilder.CodeExpressions
             }
             return this;
         }
-        public MethodCodeBlockExpressionBuilder AddCodes(IEnumerable<MyCodeExpressionBuilder> expressionBuilders)
+        public FinalyExpressionBuilder AddCodes(IEnumerable<MyCodeExpressionBuilder> expressionBuilders)
         {
             foreach (var expression in expressionBuilders)
             {
@@ -73,7 +82,7 @@ namespace SourceCodeBuilder.CodeExpressions
             }
             return this;
         }
-        public MethodCodeBlockExpressionBuilder AddVariables(IEnumerable<MyField> fields)
+        public FinalyExpressionBuilder AddVariables(IEnumerable<MyField> fields)
         {
             foreach (var field in fields)
             {
@@ -81,7 +90,7 @@ namespace SourceCodeBuilder.CodeExpressions
             }
             return this;
         }
-        public MethodCodeBlockExpressionBuilder AddVariables(IEnumerable<MyFieldBuilder> fieldBuilders)
+        public FinalyExpressionBuilder AddVariables(IEnumerable<MyFieldBuilder> fieldBuilders)
         {
             foreach (var fieldBuilder in fieldBuilders)
             {
@@ -89,16 +98,5 @@ namespace SourceCodeBuilder.CodeExpressions
             }
             return this;
         }
-
-        public MyClassBuilder EndMethod
-        {
-            get
-            {
-                _myCode.NewLine.Add(Tabs).FinishCodeBlock.This();
-                return ClassBuilder;
-            }
-        }
     }
-
-    
 }

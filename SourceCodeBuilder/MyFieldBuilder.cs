@@ -435,12 +435,12 @@ namespace SourceCodeBuilder
 
         public override string? ToString()
         {
-            return ToString(new MyDefaultFieldDeclarationFormatter());
+            return ToString(new MyFieldWriter());
         }
 
-        public string? ToString(IFormatter<MyField> formatter)
+        public string? ToString(ICodeWriter<MyField> formatter)
         {
-            return formatter?.ToString(Build());
+            return formatter?.WriteCode(Build());
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Marshalling;
 using System.Text;
+using static SourceCodeBuilderTest.TestClasses;
 
 namespace SourceCodeBuilderTest
 {
@@ -51,6 +52,7 @@ namespace SourceCodeBuilderTest
         [TestMethod]
         public void TestClasses2()
         {
+            string[] arr = ["m", "n"];
             var newClass =
                 MyClass.PublicClass("Service", "IService")
                     .AddField(MyField.String("Name"))
@@ -64,6 +66,50 @@ namespace SourceCodeBuilderTest
                 Test(
                     newClass
                     , "public class Service : IService\r\n{\r\n    string Name;\r\n    static int Value { get; set; } = 100;\r\n    public static int Calc(int number)\r\n    {\r\n        const int constInt = 100;\r\n        return constInt * Value;\r\n    }\r\n}"
+                    ));
+            TestContext.Write(_stringBuilder.ToString());
+        }
+
+        [TestMethod]
+        public void TestClasses3()
+        {
+            string[] ints = ["i", "i1", "i2"];
+            var newClass =
+                MyClass.PublicClass("Service", "IService")
+                    .AddFields(ints.Select(o => MyField.Int($"_field{o}").Init(o.Length)))
+                    .AddProperties(ints.Select(o=> MyProperty.PublicInt($"Property_{o}").LambdaGetter($" => _field{o};")))
+                    .AddMethods(ints.Select(o => MyMethod.PublicString($"CalcToString_{o}")
+                        .Parameter("int", "number")
+                        .AddLine($"return (number * _field{o}).ToString();")));
+string result =
+@"
+public class Service : IService
+{
+    int _fieldi = 1;
+    int _fieldi1 = 2;
+    int _fieldi2 = 2;
+    public int Property_i => _fieldi;
+    public int Property_i1 => _fieldi1;
+    public int Property_i2 => _fieldi2;
+    public string CalcToString_i(int number)
+    {
+        return (number * _fieldi).ToString();
+    }
+    public string CalcToString_i1(int number)
+    {
+        return (number * _fieldi1).ToString();
+    }
+    public string CalcToString_i2(int number)
+    {
+        return (number * _fieldi2).ToString();
+    }
+}
+";
+
+            Assert.IsTrue(
+                Test(
+                    newClass
+                    , "public class Service : IService\r\n{\r\n    int _fieldi = 1;\r\n    int _fieldi1 = 2;\r\n    int _fieldi2 = 2;\r\n    public int Property_i => _fieldi;\r\n    public int Property_i1 => _fieldi1;\r\n    public int Property_i2 => _fieldi2;\r\n    public string CalcToString_i(int number)\r\n    {\r\n        return (number * _fieldi).ToString();\r\n    }\r\n    public string CalcToString_i1(int number)\r\n    {\r\n        return (number * _fieldi1).ToString();\r\n    }\r\n    public string CalcToString_i2(int number)\r\n    {\r\n        return (number * _fieldi2).ToString();\r\n    }\r\n}"
                     ));
             TestContext.Write(_stringBuilder.ToString());
         }
@@ -82,6 +128,28 @@ namespace SourceCodeBuilderTest
                 return false;
             }
             
+        }
+
+        public class Service
+        {
+            int _fieldi = 1;
+            int _fieldi1 = 2;
+            int _fieldi2 = 2;
+            public int Property_i => _fieldi;
+            public int Property_i1 => _fieldi1;
+            public int Property_i2 => _fieldi2;
+            public string CalcToString_i(int number)
+            {
+                return (number * _fieldi).ToString();
+            }
+            public string CalcToString_i1(int number)
+            {
+                return (number * _fieldi1).ToString();
+            }
+            public string CalcToString_i2(int number)
+            {
+                return (number * _fieldi2).ToString();
+            }
         }
     }
 }

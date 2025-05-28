@@ -8,20 +8,23 @@ using System.Xml.Schema;
 
 namespace SourceCodeBuilder
 {
-    public class MyDefaultClassDeclarationFormatter : IFormatter<MyClass>
+    public class MyInterfaceWriter : ICodeWriter<MyInterface>
     {
-        private static IFormatter<MyClass>? s_instance;
+        private static ICodeWriter<MyInterface>? s_instance;
         private readonly System.Threading.Lock _writerLock = new();
+        public MyPropertyWriter PropertyWriter { get; set; } = new MyPropertyWriter();
+        public MyFieldWriter FieldWriter { get; set; } = new MyFieldWriter();
+        public MyMethodWriter MethodWriter { get; set; } = new MyMethodWriter();
         /// <summary>
         /// Reusable static formatter
         /// </summary>
-        public static IFormatter<MyClass> Formatter
+        public static ICodeWriter<MyInterface> Formatter
         {
             get
             {
                 if (s_instance == null)
                 {
-                    s_instance = new MyDefaultClassDeclarationFormatter();
+                    s_instance = new MyInterfaceWriter();
                 }
                 s_instance.Clear();
                 return s_instance;
@@ -29,7 +32,8 @@ namespace SourceCodeBuilder
         }
 
         private bool _hasValue;
-        private string _defaultTabs { get; set; }
+        public string _defaultTabs = "    ";
+        public string _parentTabs = string.Empty;
 
         private const string Space = " ";
         private string _
@@ -43,7 +47,7 @@ namespace SourceCodeBuilder
                 else
                 {
                     _hasValue = true;
-                    return _defaultTabs;
+                    return _parentTabs;
                 }
             }
         }
@@ -52,11 +56,11 @@ namespace SourceCodeBuilder
         {
             _hasValue = false;
         }
-        public string ToString(MyClass o)
+        public string WriteCode(MyInterface o)
         {
             if(o == null)
             {
-                throw new ArgumentNullException("MyField o");
+                throw new ArgumentNullException("MyInterface o");
             }
             using MemoryStream memoryStream = new MemoryStream();
             using StreamWriter streamWriter = new StreamWriter(memoryStream);
@@ -65,35 +69,30 @@ namespace SourceCodeBuilder
             return Encoding.ASCII.GetString(memoryStream.ToArray());
         }
 
-        TextWriter _writer;
-        public void GenerateCode(MyClass o, TextWriter writer, string tabs = "")
+        TextWriter? _writer = null;
+        public void GenerateCode(MyInterface o, TextWriter writer, string tabs = "")
         {
             if (o == null)
             {
-                throw new ArgumentNullException("MyField o");
+                throw new ArgumentNullException("MyInterface o");
             }
             lock (_writerLock)
             {
                 Clear();
-                _defaultTabs = tabs;
+                _parentTabs = tabs;
                 _writer = writer;
-                WriteCode(o);
+                SetAccessModifiers(o);
+                SetType(o);
+                SetName(o);
+                SetGeneric(o);
+                SetBase(o);
+                SetStartMembers(o);
+                SetMembers(o);
+                SetEndMembers(o);
             }
         }
 
-        private void WriteCode(MyClass o)
-        {
-            SetAccessModifiers(o);
-            SetType(o);
-            SetName(o);
-            SetGeneric(o);
-            SetBase(o);
-            SetStartMembers(o);
-            SetMembers(o);
-            SetEndMembers(o);
-        }
-
-        public virtual void SetAccessModifiers(MyClass o)
+        public virtual void SetAccessModifiers(MyInterface o)
         {
             foreach(var a in o.AccessModifiersList)
             {
@@ -101,17 +100,17 @@ namespace SourceCodeBuilder
             }
         }
 
-        public virtual void SetType(MyClass o)
+        public virtual void SetType(MyInterface o)
         {
-            Write($"{_}class");
+            Write($"{_}interface");
         }
 
-        public virtual void SetName(MyClass o)
+        public virtual void SetName(MyInterface o)
         {
-            Write($"{_}{o.ClassName}");
+            Write($"{_}{o.InterfaceName}");
         }
 
-        public virtual void SetGeneric(MyClass o)
+        public virtual void SetGeneric(MyInterface o)
         {
             if (o.GenericList == null || o.GenericList.Count == 0)
             {
@@ -120,70 +119,64 @@ namespace SourceCodeBuilder
             Write($"<");
 
             string q = string.Empty;
-            foreach (string baseClass in o.GenericList)
+            foreach (string baseInterface in o.GenericList)
             {
-                Write($"{q}{baseClass}");
+                Write($"{q}{baseInterface}");
                 q = $",{_}";
             }
             Write($">");
         }
 
-        public virtual void SetBase(MyClass o)
+        public virtual void SetBase(MyInterface o)
         {
-            if(o.BaseClassList == null || o.BaseClassList.Count == 0)
+            if(o.BaseInterfaceList == null || o.BaseInterfaceList.Count == 0)
             {
                 return;
             }
             Write($"{_}:");
 
             string q = string.Empty;
-            foreach(string baseClass in o.BaseClassList)
+            foreach(string baseInterface in o.BaseInterfaceList)
             {
-                Write($"{q}{_}{baseClass}");
+                Write($"{q}{_}{baseInterface}");
                 q = ",";
             }
         }
 
-        public virtual void SetStartMembers(MyClass o)
+        public virtual void SetStartMembers(MyInterface o)
         {
             Write(Environment.NewLine);
-            Write(_defaultTabs + "{");
+            Write("{");
         }
 
-        public virtual void SetMembers(MyClass o)
+        public virtual void SetMembers(MyInterface o)
         {
-            foreach(MyField field in o.Fields ?? [])
-            {
-                Write(Environment.NewLine);
-                Write("    " + _defaultTabs + field.ToString());
-            }
             foreach (MyProperty property in o.Properties ?? [])
             {
                 Write(Environment.NewLine);
-                Write("    " + _defaultTabs + property.ToString());
+                PropertyWriter.GenerateCodeForInterface(property, _writer, _parentTabs + _defaultTabs);
             }
             foreach (MyMethod method in o.Methods ?? [])
             {
                 Write(Environment.NewLine);
-                //method.MyCode.BuildCode(_writer);
-                new MyDefaultMethodDeclarationFormatter().GenerateCode(method, _writer, "    " + _defaultTabs);
+                MethodWriter.GenerateCodeForInterface(method, _writer, _parentTabs + _defaultTabs);
             }
         }
 
-        public virtual void SetEndMembers(MyClass o)
+        public virtual void SetEndMembers(MyInterface o)
         {
             Write(Environment.NewLine);
-            Write(_defaultTabs + "}");
+            Write("}");
         }
 
-        public virtual string? AccessModifierToString(MyClass.AccessModifiers? accessModifier)
+        public virtual string? AccessModifierToString(MyInterface.AccessModifiers? accessModifier)
         {
             return accessModifier?.ToString()?.ToLower();
         }
 
-        private void Write(string value)
+        public virtual void Write(string value)
         {
-            _writer.Write(value.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs));
+            _writer?.Write(value.Replace(Environment.NewLine, Environment.NewLine + _parentTabs ));
         }
     }
 }

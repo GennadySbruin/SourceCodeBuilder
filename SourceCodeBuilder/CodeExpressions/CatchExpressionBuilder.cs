@@ -1,97 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace SourceCodeBuilder.CodeExpressions
 {
-    public class IfCodeBlockIfExpressionBuilder : IExpressionBuilder
+    public class CatchExpressionBuilder
     {
-        MyCodeExpression _myCode;
-        internal readonly IfExpressionBuilder IfExpressionBuilder;
+        MyCodeExpression _myCode = new();
+        internal readonly TryExpressionBuilder ParentExpressionBuilder;
         internal string Tabs = string.Empty;
         public MyCodeExpression Build()
         {
             return _myCode;
         }
 
-        public IfCodeBlockIfExpressionBuilder(IfExpressionBuilder source, MyCodeExpression ifExpression)
+        public CatchExpressionBuilder(TryExpressionBuilder source, MyCodeExpression myCodeExpression)
         {
-            _myCode = ifExpression;
-            IfExpressionBuilder = source;
+            ParentExpressionBuilder = source;
+            _myCode = myCodeExpression;
             Tabs += source.Tabs;
         }
-        public IfCodeBlockElseExpressionBuilder Else
+        public FinalyExpressionBuilder Finaly
         {
             get
             {
                 _myCode
                     .NewLine.Add(Tabs).FinishCodeBlock
-                    .NewLine.Add(Tabs).Else
+                    .NewLine.Add(Tabs).Finaly
                     .NewLine.Add(Tabs).StartCodeBlock.This();
-                return new IfCodeBlockElseExpressionBuilder(IfExpressionBuilder, _myCode);
+                return new FinalyExpressionBuilder(ParentExpressionBuilder, _myCode);
             }
         }
 
-        public IfExpressionBuilder ElseIf_
+        public CatchExpressionBuilder Catch(string exceptionType, string exceptionVariableName)
         {
-            get
-            {
-                _myCode
-                    .NewLine.Add(Tabs).FinishCodeBlock
-                    .NewLine.Add(Tabs).Else._.If._.This();
-                return new IfExpressionBuilder(IfExpressionBuilder.ParentExpressionBuilder, _myCode);
-            }
-        }
-        public IfConditionExpressionBuilder ElseIf(string condition)
-        {
-
             _myCode
                 .NewLine.Add(Tabs).FinishCodeBlock
-                .NewLine.Add(Tabs).Else._.If._.This();
-            _myCode.OpenBracket.Add(condition);
-            IfConditionExpressionBuilder builder = new IfConditionExpressionBuilder(IfExpressionBuilder, _myCode);
+                .NewLine.Add(Tabs).Catch._
+                    .OpenBracket
+                        .Add(exceptionType)._.Add(exceptionVariableName)
+                    .CloseBracket
+                .NewLine.Add(Tabs).StartCodeBlock.This();
+            CatchExpressionBuilder builder = new CatchExpressionBuilder(ParentExpressionBuilder, _myCode);
             return builder;
         }
 
-        public MyCodeExpressionBuilder EndIf
+        public MyCodeExpressionBuilder EndTry
         {
             get
             {
                 _myCode.NewLine.Add(Tabs).FinishCodeBlock.This();
-                return IfExpressionBuilder.ParentExpressionBuilder;
+                return ParentExpressionBuilder.ParentExpressionBuilder;
             }
         }
 
-        public IfCodeBlockIfExpressionBuilder AddLine(string codeLine)
+        public CatchExpressionBuilder AddLine(string codeLine)
         {
             _myCode.NewLine.Add(Tabs).Tab.Add(codeLine);
             return this;
         }
-        public IfCodeBlockIfExpressionBuilder AddCode(MyCodeExpression expression)
+        public CatchExpressionBuilder AddCode(MyCodeExpression expression)
         {
             _myCode.Add(expression);
             return this;
         }
-        public IfCodeBlockIfExpressionBuilder AddCode(MyCodeExpressionBuilder expressionBuilder)
+        public CatchExpressionBuilder AddCode(MyCodeExpressionBuilder expressionBuilder)
         {
             _myCode.Add(expressionBuilder);
             return this;
         }
-        public IfCodeBlockIfExpressionBuilder AddVariable(MyField field)
+        public CatchExpressionBuilder AddVariable(MyField field)
         {
             _myCode.NewLine.Add(Tabs).Tab.Add(field);
             return this;
         }
-        public IfCodeBlockIfExpressionBuilder AddVariable(MyFieldBuilder fieldBuilder)
+        public CatchExpressionBuilder AddVariable(MyFieldBuilder fieldBuilder)
         {
             _myCode.NewLine.Add(Tabs).Tab.Add(fieldBuilder);
             return this;
         }
-        public IfCodeBlockIfExpressionBuilder AddLines(IEnumerable<string> codeLines)
+        public CatchExpressionBuilder AddLines(IEnumerable<string> codeLines)
         {
             foreach (var codeLine in codeLines)
             {
@@ -99,7 +90,7 @@ namespace SourceCodeBuilder.CodeExpressions
             }
             return this;
         }
-        public IfCodeBlockIfExpressionBuilder AddCodes(IEnumerable<MyCodeExpression> expressions)
+        public CatchExpressionBuilder AddCodes(IEnumerable<MyCodeExpression> expressions)
         {
             foreach (var expression in expressions)
             {
@@ -107,7 +98,7 @@ namespace SourceCodeBuilder.CodeExpressions
             }
             return this;
         }
-        public IfCodeBlockIfExpressionBuilder AddCodes(IEnumerable<MyCodeExpressionBuilder> expressionBuilders)
+        public CatchExpressionBuilder AddCodes(IEnumerable<MyCodeExpressionBuilder> expressionBuilders)
         {
             foreach (var expression in expressionBuilders)
             {
@@ -115,7 +106,7 @@ namespace SourceCodeBuilder.CodeExpressions
             }
             return this;
         }
-        public IfCodeBlockIfExpressionBuilder AddVariables(IEnumerable<MyField> fields)
+        public CatchExpressionBuilder AddVariables(IEnumerable<MyField> fields)
         {
             foreach (var field in fields)
             {
@@ -123,7 +114,7 @@ namespace SourceCodeBuilder.CodeExpressions
             }
             return this;
         }
-        public IfCodeBlockIfExpressionBuilder AddVariables(IEnumerable<MyFieldBuilder> fieldBuilders)
+        public CatchExpressionBuilder AddVariables(IEnumerable<MyFieldBuilder> fieldBuilders)
         {
             foreach (var fieldBuilder in fieldBuilders)
             {
@@ -131,9 +122,5 @@ namespace SourceCodeBuilder.CodeExpressions
             }
             return this;
         }
-
-
     }
-
-    
 }

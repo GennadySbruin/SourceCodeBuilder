@@ -81,6 +81,8 @@ namespace SourceCodeBuilder
         /// <returns></returns>
         //public string Tabs = string.Empty;
 
+        public bool Async { get; set; }
+
         public MyCodeExpression MyCode = new();
         public List<AccessModifiers?> AccessModifiersList { get; set; } = [];
         public enum AccessModifiers
@@ -410,13 +412,12 @@ namespace SourceCodeBuilder
 
         public override string? ToString()
         {
-            //return ToString(new MyDefaultMethodDeclarationFormatter() { DefaultTabs = Tabs });
-            return ToString(new MyDefaultMethodDeclarationFormatter());
+            return ToString(new MyMethodWriter());
         }
 
-        public string? ToString(IFormatter<MyMethod> formatter)
+        public string? ToString(ICodeWriter<MyMethod> formatter)
         {
-            return formatter?.ToString(this);
+            return formatter?.WriteCode(this);
         }
 
 

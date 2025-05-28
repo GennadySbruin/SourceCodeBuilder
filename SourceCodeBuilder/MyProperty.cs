@@ -382,12 +382,12 @@ namespace SourceCodeBuilder
         public override string? ToString()
         {
             //return ToString(new MyDefaultPropertyDeclarationFormatter() { DefaultTabs = Tabs});
-            return ToString(new MyDefaultPropertyDeclarationFormatter());
+            return ToString(new MyPropertyWriter());
         }
 
-        public string? ToString(IFormatter<MyProperty> formatter)
+        public string? ToString(ICodeWriter<MyProperty> formatter)
         {
-            return formatter?.ToString(this);
+            return formatter?.WriteCode(this);
         }
     }
 }

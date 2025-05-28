@@ -330,6 +330,15 @@ namespace SourceCodeBuilder
             return this;
         }
 
+        public MyMethodBuilder AddLines(IEnumerable<string> methodLines)
+        {
+            foreach (var methodLine in methodLines)
+            {
+                _myMethod.MyCode.NewLine.Tab.Add(methodLine);
+            }
+            return this;
+        }
+
         /// <summary>
         /// Add line to method body.
         /// <example>
@@ -353,6 +362,15 @@ namespace SourceCodeBuilder
         {
             _myMethod.MyCode.Add(methodExpression);
 
+            return this;
+        }
+
+        public MyMethodBuilder AddCodes(IEnumerable<MyCodeExpression> methodExpressions)
+        {
+            foreach (var methodExpression in methodExpressions)
+            {
+                _myMethod.MyCode.Add(methodExpression);
+            }
             return this;
         }
 
@@ -382,6 +400,15 @@ namespace SourceCodeBuilder
             return this;
         }
 
+        public MyMethodBuilder AddCodes(IEnumerable<MyCodeExpressionBuilder> methodExpressionBuilders)
+        {
+            foreach (var methodExpressionBuilder in methodExpressionBuilders)
+            {
+                _myMethod.MyCode.Add(methodExpressionBuilder);
+            }
+            return this;
+        }
+
         /// <summary>
         /// Add variable code.
         /// <example>
@@ -407,6 +434,15 @@ namespace SourceCodeBuilder
         {
             _myMethod.MyCode.NewLine.Tab.Add(fieldBuilder);
 
+            return this;
+        }
+
+        public MyMethodBuilder AddVariables(IEnumerable<MyFieldBuilder> fieldBuilders)
+        {
+            foreach(var fieldBuilder in fieldBuilders)
+            {
+                _myMethod.MyCode.NewLine.Tab.Add(fieldBuilder);
+            }
             return this;
         }
 
@@ -479,6 +515,28 @@ namespace SourceCodeBuilder
             get
             {
                 SetAccessModifier(MyMethod.AccessModifiers.Static);
+                return this;
+            }
+
+        }
+
+        /// <summary>
+        /// Method with async modifier.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyMethodBuilder.Static.Type("string").Name("Description").ToString();
+        /// </code>
+        /// result:
+        /// <para><c>static string Description() { }</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyMethodBuilder Async
+        {
+            get
+            {
+                _myMethod.Async = true;
                 return this;
             }
 
@@ -574,16 +632,16 @@ namespace SourceCodeBuilder
         /// <returns></returns>
         public override string? ToString()
         {
-            return ToString(new MyDefaultMethodDeclarationFormatter());
+            return ToString(new MyMethodWriter());
         }
 
         /// <summary>
         /// Convert this method to result code string with assigned formatter.
         /// </summary>
         /// <returns></returns>
-        public string? ToString(IFormatter<MyMethod> formatter)
+        public string? ToString(ICodeWriter<MyMethod> formatter)
         {
-            return formatter?.ToString(Build());
+            return formatter?.WriteCode(Build());
         }
     }
 }

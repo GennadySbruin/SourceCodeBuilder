@@ -7,20 +7,20 @@ using System.Xml.Schema;
 
 namespace SourceCodeBuilder
 {
-    public class MyDefaultMethodDeclarationFormatter : IFormatter<MyMethod>
+    public class MyMethodWriter : ICodeWriter<MyMethod>
     {
-        private static IFormatter<MyMethod>? s_instance;
+        private static ICodeWriter<MyMethod>? s_instance;
         private readonly System.Threading.Lock _writerLock = new();
         /// <summary>
         /// Reusable static formatter
         /// </summary>
-        public static IFormatter<MyMethod> Formatter
+        public static ICodeWriter<MyMethod> Formatter
         {
             get
             {
                 if (s_instance == null)
                 {
-                    s_instance = new MyDefaultMethodDeclarationFormatter();
+                    s_instance = new MyMethodWriter();
                 }
                 s_instance.Clear();
                 return s_instance;
@@ -28,7 +28,8 @@ namespace SourceCodeBuilder
         }
 
         private bool _hasValue;
-        public virtual string _defaultTabs { get; set; }
+        public string _defaultTabs = "    ";
+        public string _parentTabs = string.Empty;
 
         private const string Space = " ";
         private const string defaultStartCodeBlockStatement = "{";
@@ -44,7 +45,7 @@ namespace SourceCodeBuilder
                 else
                 {
                     _hasValue = true;
-                    return _defaultTabs;
+                    return _parentTabs;
                 }
             }
         }
@@ -52,7 +53,7 @@ namespace SourceCodeBuilder
         {
             _hasValue = false;
         }
-        public string ToString(MyMethod o)
+        public string WriteCode(MyMethod o)
         {
             if(o == null)
             {
@@ -65,30 +66,43 @@ namespace SourceCodeBuilder
             return Encoding.ASCII.GetString(memoryStream.ToArray());
         }
 
-        TextWriter _writer;
+        TextWriter? _writer = null;
         public void GenerateCode(MyMethod o, TextWriter writer, string tabs = "")
         {
             if (o == null)
             {
-                throw new ArgumentNullException("MyField o");
+                throw new ArgumentNullException("MyMethod o");
             }
             lock (_writerLock)
             {
                 Clear();
-                _defaultTabs = tabs;
+                _parentTabs = tabs;
                 _writer = writer;
-                WriteCode(o);
+                SetAccessModifiers(o);
+                SetAsync(o);
+                SetType(o);
+                SetName(o);
+                SetParameters(o);
+                SetLambdaExpression(o);
+                SetBody(o);
             }
         }
 
-        private void WriteCode(MyMethod o)
+        public void GenerateCodeForInterface(MyMethod o, TextWriter writer, string tabs = "")
         {
-            SetAccessModifiers(o);
-            SetType(o);
-            SetName(o);
-            SetParameters(o);
-            SetLambdaExpression(o);
-            SetBody(o);
+            if (o == null)
+            {
+                throw new ArgumentNullException("MyMethod o");
+            }
+            lock (_writerLock)
+            {
+                Clear();
+                _parentTabs = tabs;
+                _writer = writer;
+                SetType(o);
+                SetName(o);
+                SetParameters(o);
+            }
         }
 
         public virtual void SetAccessModifiers(MyMethod o)
@@ -99,6 +113,14 @@ namespace SourceCodeBuilder
             }
         }
 
+        public virtual void SetAsync(MyMethod o)
+        {
+            if (o.Async)
+            {
+                Write($"{_}async");
+            }
+            
+        }
         public virtual void SetType(MyMethod o)
         {
             Write($"{_}{o.MethodReturnTypeName}");
@@ -134,11 +156,10 @@ namespace SourceCodeBuilder
             if (o.MyCode.HasCode())
             {
                 Write(Environment.NewLine);
-                Write(_defaultTabs + defaultStartCodeBlockStatement);
-                //Write(_defaultTabs + o.ToString());
-                o.MyCode.BuildCode(_writer, _defaultTabs);
+                Write(defaultStartCodeBlockStatement);
+                o.MyCode.BuildCode(_writer, _parentTabs);
                 Write(Environment.NewLine);
-                Write(_defaultTabs + defaultEndCodeBlockStatement);
+                Write(defaultEndCodeBlockStatement);
             }
             else
             {
@@ -157,17 +178,9 @@ namespace SourceCodeBuilder
             return accessModifier?.ToString()?.ToLower();
         }
 
-        private void Write(string value)
+        public virtual void Write(string value)
         {
-            if(value == Environment.NewLine)
-            {
-                _writer.Write(value);
-            }
-            else
-            {
-                _writer.Write(value.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs));
-            }
-            
+            _writer?.Write(value.Replace(Environment.NewLine, Environment.NewLine +_parentTabs));
         }
     }
 }
