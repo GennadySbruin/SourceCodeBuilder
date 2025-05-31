@@ -89,6 +89,7 @@ namespace SourceCodeBuilder
         
 
         public List<AccessModifiers?> AccessModifiersList { get; set; } = [];
+        public List<string> Comments { get; set; } = [];
         public enum AccessModifiers
         {
             Abstract,

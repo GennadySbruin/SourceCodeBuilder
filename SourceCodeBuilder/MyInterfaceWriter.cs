@@ -81,6 +81,7 @@ namespace SourceCodeBuilder
                 Clear();
                 _parentTabs = tabs;
                 _writer = writer;
+                SetComments(o);
                 SetAccessModifiers(o);
                 SetType(o);
                 SetName(o);
@@ -92,6 +93,14 @@ namespace SourceCodeBuilder
             }
         }
 
+        public virtual void SetComments(MyInterface o)
+        {
+            foreach (var c in o.Comments ?? [])
+            {
+                string comment = c.StartsWith("//") ? c : $"//{c}";
+                Write($"{Environment.NewLine}{comment}");
+            }
+        }
         public virtual void SetAccessModifiers(MyInterface o)
         {
             foreach(var a in o.AccessModifiersList)

@@ -379,6 +379,19 @@ namespace SourceCodeBuilder
             }
         }
 
+        public MyPropertyBuilder AddComment(string commentLine)
+        {
+            _myProperty.Comments.Add(commentLine);
+            return this;
+        }
+        public MyPropertyBuilder AddComments(IEnumerable<string> commentLines)
+        {
+            foreach (var commentLine in commentLines)
+            {
+                _myProperty.Comments.Add(commentLine);
+            }
+            return this;
+        }
 
         /// <summary>
         /// Set initial expression from string.

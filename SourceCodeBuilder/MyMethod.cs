@@ -57,30 +57,9 @@ namespace SourceCodeBuilder
         /// <returns></returns>
         public string? LambdaExpression { get; set; }
 
-        /// <summary>
-        /// Method starting tab
-        /// <example>
-        /// <para>Example 1: without tab</para>
-        /// <code>
-        /// string Code();
-        /// </code>
-        /// </example>
-        /// <example>
-        /// <para>Example 2: with tab</para>
-        /// <code>
-        ///     string Code();
-        /// </code>
-        /// </example>
-        /// <example>
-        /// <para>Example 3: with 2 tab</para>
-        /// <code>
-        ///         string Code();
-        /// </code>
-        /// </example>
-        /// </summary>
-        /// <returns></returns>
-        //public string Tabs = string.Empty;
 
+        public List<string> Comments { get; set; } = [];
+        public bool AutoGenerateComments { get; set; } = false;
         public bool Async { get; set; }
 
         public MyCodeExpression MyCode = new();

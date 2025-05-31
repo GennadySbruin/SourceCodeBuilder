@@ -509,6 +509,20 @@ namespace SourceCodeBuilder
             return this;
         }
 
+        public MyInterfaceBuilder AddComment(string commentLine)
+        {
+            _myInterface.Comments.Add(commentLine);
+            return this;
+        }
+        public MyInterfaceBuilder AddComments(IEnumerable<string> commentLines)
+        {
+            foreach (var commentLine in commentLines)
+            {
+                _myInterface.Comments.Add(commentLine);
+            }
+            return this;
+        }
+
         /// <summary>
         /// <example>
         /// <code>

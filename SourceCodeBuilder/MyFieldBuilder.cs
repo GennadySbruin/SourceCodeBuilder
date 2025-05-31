@@ -289,6 +289,20 @@ namespace SourceCodeBuilder
             }
         }
 
+        public MyFieldBuilder AddComment(string commentLine)
+        {
+            _myField.Comments.Add(commentLine);
+            return this;
+        }
+        public MyFieldBuilder AddComments(IEnumerable<string> commentLines)
+        {
+            foreach (var commentLine in commentLines)
+            {
+                _myField.Comments.Add(commentLine);
+            }
+            return this;
+        }
+
         /// <summary>
         /// Set initial expression from string.
         /// <example>

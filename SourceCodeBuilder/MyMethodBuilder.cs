@@ -330,11 +330,35 @@ namespace SourceCodeBuilder
             return this;
         }
 
+        public MyMethodBuilder WithGeneratedComments
+        {
+            get
+            {
+                _myMethod.AutoGenerateComments = true; ;
+                return this;
+            }
+        }
+
+        public MyMethodBuilder AddComment(string commentLine)
+        {
+            _myMethod.Comments.Add(commentLine);
+            return this;
+        }
+
         public MyMethodBuilder AddLines(IEnumerable<string> methodLines)
         {
             foreach (var methodLine in methodLines)
             {
                 _myMethod.MyCode.NewLine.Tab.Add(methodLine);
+            }
+            return this;
+        }
+
+        public MyMethodBuilder AddComments(IEnumerable<string> commentLines)
+        {
+            foreach (var commentLine in commentLines)
+            {
+                _myMethod.Comments.Add(commentLine);
             }
             return this;
         }

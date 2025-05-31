@@ -298,6 +298,20 @@ namespace SourceCodeBuilder
 
         }
 
+        public MyClassBuilder AddComment(string commentLine)
+        {
+            _myClass.Comments.Add(commentLine);
+            return this;
+        }
+        public MyClassBuilder AddComments(IEnumerable<string> commentLines)
+        {
+            foreach (var commentLine in commentLines)
+            {
+                _myClass.Comments.Add(commentLine);
+            }
+            return this;
+        }
+
         /// <summary>
         /// Add class field
         /// <example>

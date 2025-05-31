@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using System.Xml.Schema;
 
 namespace SourceCodeBuilder
@@ -67,7 +68,7 @@ namespace SourceCodeBuilder
         }
 
         TextWriter? _writer = null;
-        public void GenerateCode(MyMethod o, TextWriter writer, string tabs = "")
+        public void GenerateCode(MyMethod o, TextWriter writer, string tabs = "", bool forComments = false)
         {
             if (o == null)
             {
@@ -78,6 +79,7 @@ namespace SourceCodeBuilder
                 Clear();
                 _parentTabs = tabs;
                 _writer = writer;
+                SetComments(o, forComments);
                 SetAccessModifiers(o);
                 SetAsync(o);
                 SetType(o);
@@ -88,7 +90,7 @@ namespace SourceCodeBuilder
             }
         }
 
-        public void GenerateCodeForInterface(MyMethod o, TextWriter writer, string tabs = "")
+        public void GenerateCodeForInterface(MyMethod o, TextWriter writer, string tabs = "", bool forComments = false)
         {
             if (o == null)
             {
@@ -99,9 +101,35 @@ namespace SourceCodeBuilder
                 Clear();
                 _parentTabs = tabs;
                 _writer = writer;
+                SetComments(o, forComments);
                 SetType(o);
                 SetName(o);
                 SetParameters(o);
+            }
+        }
+
+        public virtual void SetComments(MyMethod o, bool forComments)
+        {
+            if (forComments)
+            {
+                return;
+            }
+
+            if (o.AutoGenerateComments)
+            {
+                GenerateComments(o);
+            }
+            else
+            {
+                if(o.Comments?.Count > 0)
+                {
+                    foreach (var c in o.Comments ?? [])
+                    {
+                        string comment = c.StartsWith("//") ? c : $"//{c}";
+                        Write($"{Environment.NewLine}{comment}");
+                    }
+                    _writer?.Write(Environment.NewLine);
+                }
             }
         }
 
@@ -181,6 +209,26 @@ namespace SourceCodeBuilder
         public virtual void Write(string value)
         {
             _writer?.Write(value.Replace(Environment.NewLine, Environment.NewLine +_parentTabs));
+        }
+
+        private void GenerateComments(MyMethod o)
+        {
+            _writer.Write(Environment.NewLine + _parentTabs + "/// <summary>");
+            foreach (var c in o.Comments ?? [])
+            {
+                string comment = c.StartsWith("//") ? c : $"//{c}";
+                _writer.Write(Environment.NewLine + _parentTabs + comment);
+            }
+            _writer.Write(Environment.NewLine + _parentTabs + "/// <example>");
+            _writer.Write(Environment.NewLine + _parentTabs + "/// <code>");
+            //Write($"{Environment.NewLine}");
+            _writer?.Write(Environment.NewLine);
+            MyMethodWriter myMethodWriter = new MyMethodWriter();
+            myMethodWriter.GenerateCode(o, _writer, _parentTabs + "/// ", true);
+            _writer.Write(Environment.NewLine + _parentTabs + "/// </code>");
+            _writer.Write(Environment.NewLine + _parentTabs + "/// </example>");
+            _writer.Write(Environment.NewLine + _parentTabs + "/// </summary>");
+            _writer?.Write(Environment.NewLine);
         }
     }
 }

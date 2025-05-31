@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
@@ -178,6 +179,85 @@ namespace SourceCodeBuilder
         /// </example>
         /// </summary>
         public static MyCodeExpression StartIfConditionExpression { get; set; } = new MyCodeExpression("if");
+
+        /// <summary>
+        /// Expression 'switch'
+        /// <example>
+        /// <code>
+        /// switch (variable) 
+        /// {
+        ///     case x : ....
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression SwitchExpression { get; set; } = new MyCodeExpression("switch");
+
+        /// <summary>
+        /// Expression 'case'
+        /// <example>
+        /// <code>
+        /// switch (variable) 
+        /// {
+        ///     case x : ....
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression CaseExpression { get; set; } = new MyCodeExpression("case");
+
+        /// <summary>
+        /// Expression 'default:'
+        /// <example>
+        /// <code>
+        /// switch (variable) 
+        /// {
+        ///     case x : ....
+        ///     default:
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression SwitchDefaultExpression { get; set; } = new MyCodeExpression("default:");
+
+        /// <summary>
+        /// Expression 'for'
+        /// <example>
+        /// <code>
+        /// for (...) 
+        /// {
+        ///     ...
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression ForExpression { get; set; } = new MyCodeExpression("for");
+
+        /// <summary>
+        /// Expression 'foreach'
+        /// <example>
+        /// <code>
+        /// foreach (...) 
+        /// {
+        ///     ...
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression ForeachExpression { get; set; } = new MyCodeExpression("foreach");
+
+        /// <summary>
+        /// Expression 'while'
+        /// <example>
+        /// <code>
+        /// while (...) 
+        /// {
+        ///     ...
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        public static MyCodeExpression WhileExpression { get; set; } = new MyCodeExpression("while");
 
         /// <summary>
         /// Expression '('
@@ -393,6 +473,12 @@ namespace SourceCodeBuilder
         internal MyCodeExpression Or => Add(OrExpression);
         internal MyCodeExpression OrOr => Add(OrOrExpression);
         internal MyCodeExpression If => Add(StartIfConditionExpression);
+        internal MyCodeExpression Switch => Add(SwitchExpression);
+        internal MyCodeExpression Case => Add(CaseExpression);
+        internal MyCodeExpression SwitchDefault => Add(SwitchDefaultExpression);
+        internal MyCodeExpression For => Add(ForExpression);
+        internal MyCodeExpression Foreach => Add(ForeachExpression);
+        internal MyCodeExpression While => Add(WhileExpression);
         internal MyCodeExpression OpenBracket => Add(OpenBracketExpression);
         internal MyCodeExpression CloseBracket => Add(CloseBracketExpression);
         internal MyCodeExpression Else => Add(ElseConditionExpression);

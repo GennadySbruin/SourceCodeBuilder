@@ -16,6 +16,7 @@
         public List<MyProperty>? Properties { get; set; }
         public List<MyMethod>? Methods { get; set; }
         public List<MyClass>? Classes { get; set; }
+        public List<string> Comments { get; set; } = [];
         public List<AccessModifiers?> AccessModifiersList { get; set; } = [];
         public enum AccessModifiers
         {

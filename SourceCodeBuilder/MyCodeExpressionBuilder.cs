@@ -69,6 +69,57 @@ namespace SourceCodeBuilder
             
         }
 
+        public CaseExpressionBuilder Switch(string variable)
+        {
+            _myCode.Add(Tabs).Switch._.This();
+            _myCode.OpenBracket.Add(variable).CloseBracket
+                .NewLine.StartCodeBlock.This();
+            CaseExpressionBuilder caseExpressionBuilder = new CaseExpressionBuilder(this, _myCode);
+            return caseExpressionBuilder;
+        }
+
+        public CycleExpressionBuilder For(string forExpression)
+        {
+            _myCode.Add(Tabs)
+                .For._.OpenBracket.Add(forExpression).CloseBracket
+                .NewLine.StartCodeBlock.This();
+            CycleExpressionBuilder caseExpressionBuilder = new CycleExpressionBuilder(this, _myCode);
+            return caseExpressionBuilder;
+        }
+
+        public CycleExpressionBuilder Foreach(string forExpression)
+        {
+            _myCode.Add(Tabs)
+                .Foreach._.OpenBracket.Add(forExpression).CloseBracket
+                .NewLine.StartCodeBlock.This();
+            CycleExpressionBuilder caseExpressionBuilder = new CycleExpressionBuilder(this, _myCode);
+            return caseExpressionBuilder;
+        }
+
+        public CycleExpressionBuilder Foreach(string type, string name, string iEnumerable)
+        {
+            _myCode.Add(Tabs)
+                .Foreach._
+                    .OpenBracket
+                        .Add(type)._
+                        .Add(name)._
+                        .Add("in")._
+                        .Add(iEnumerable)
+                    .CloseBracket
+                .NewLine.StartCodeBlock.This();
+            CycleExpressionBuilder caseExpressionBuilder = new CycleExpressionBuilder(this, _myCode);
+            return caseExpressionBuilder;
+        }
+
+        public CycleExpressionBuilder While(string whileExpression)
+        {
+            _myCode.Add(Tabs)
+                .While._.OpenBracket.Add(whileExpression).CloseBracket
+                .NewLine.StartCodeBlock.This();
+            CycleExpressionBuilder caseExpressionBuilder = new CycleExpressionBuilder(this, _myCode);
+            return caseExpressionBuilder;
+        }
+
         public TryExpressionBuilder Try
         {
             get
@@ -76,6 +127,16 @@ namespace SourceCodeBuilder
                 _myCode.Add(Tabs).Add("try")
                     .NewLine.Add(Tabs).StartCodeBlock.This();
                 return new TryExpressionBuilder(this, _myCode);
+            }
+        }
+
+        public DoCycleExpressionBuilder Do
+        {
+            get
+            {
+                _myCode.Add(Tabs).Add("do")
+                    .NewLine.Add(Tabs).StartCodeBlock.This();
+                return new DoCycleExpressionBuilder(this, _myCode);
             }
         }
 

@@ -82,6 +82,7 @@ namespace SourceCodeBuilder
                 Clear();
                 _parentTabs = tabs;
                 _writer = writer;
+                SetComments(o);
                 SetAccessModifiers(o);
                 SetType(o);
                 SetName(o);
@@ -105,9 +106,19 @@ namespace SourceCodeBuilder
                 Clear();
                 _parentTabs = tabs;
                 _writer = writer;
+                SetComments(o);
                 SetType(o);
                 SetName(o);
                 InterfaceGetterSetter(o);
+            }
+        }
+
+        public virtual void SetComments(MyProperty o)
+        { 
+            foreach (var c in o.Comments ?? [])
+            {
+                string comment = c.StartsWith("//") ? c : $"//{c}";
+                Write($"{Environment.NewLine}{comment}");
             }
         }
 

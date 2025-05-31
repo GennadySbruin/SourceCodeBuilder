@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -172,6 +173,15 @@ namespace SourceCodeBuilder
 
         }
 
+        public MyNamespaceBuilder WithName(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                _myNamespace.NamespaceName = name;
+            }
+            return this;
+
+        }
 
         /// <summary>
         /// Set file name. REQUIRED
@@ -206,5 +216,14 @@ namespace SourceCodeBuilder
             return _myNamespace?.ToString() ?? string.Empty;
         }
 
+        public bool Save()
+        {
+            MyNamespaceWriter myNamespaceWriter = new MyNamespaceWriter();
+            using (StreamWriter fs = new StreamWriter(_myNamespace.FileName))
+            {
+                myNamespaceWriter.GenerateCode(_myNamespace, fs);
+            }
+            return true;
+        }
     }
 }

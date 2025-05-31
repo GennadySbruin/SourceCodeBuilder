@@ -93,7 +93,7 @@ namespace SourceCodeBuilder
             foreach (var u in o.Usings) 
             {
                 Write(Environment.NewLine);
-                Write($"Using {u};");
+                Write($"using {u};");
             }
             
         }
@@ -104,7 +104,9 @@ namespace SourceCodeBuilder
         }
         public virtual void SetName(MyNamespace o)
         {
-            Write($"{_}{o.NamespaceName}");
+            Write(Environment.NewLine);
+            Write(Environment.NewLine);
+            Write($"{_}namespace {o.NamespaceName}");
         }
         public virtual void SetMembers(MyNamespace o)
         {
