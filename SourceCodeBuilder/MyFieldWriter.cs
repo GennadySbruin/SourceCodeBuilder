@@ -78,6 +78,7 @@ namespace SourceCodeBuilder
                 _parentTabs = tabs;
                 _writer = writer;
                 SetComments(o);
+                SetAttributes(o);
                 SetAccessModifiers(o);
                 SetType(o);
                 SetName(o);
@@ -88,10 +89,26 @@ namespace SourceCodeBuilder
 
         public virtual void SetComments(MyField o)
         {
-            foreach (var c in o.Comments ?? [])
+            if (o.Comments?.Count > 0)
             {
-                string comment = c.StartsWith("//") ? c : $"//{c}";
-                Write($"{Environment.NewLine}{comment}");
+                foreach (var c in o.Comments ?? [])
+                {
+                    string comment = c.StartsWith("//") ? c : $"//{c}";
+                    Write($"{Environment.NewLine}{comment}");
+                }
+                _writer?.Write($"{Environment.NewLine}");
+            }
+        }
+
+        public virtual void SetAttributes(MyField o)
+        {
+            if (o.Attributes?.Count > 0)
+            {
+                foreach (var attribute in o.Attributes ?? [])
+                {
+                    Write($"{Environment.NewLine}{attribute}");
+                }
+                _writer?.Write($"{Environment.NewLine}");
             }
         }
         public virtual void SetAccessModifiers(MyField o)

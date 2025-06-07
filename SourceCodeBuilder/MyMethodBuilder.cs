@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -570,6 +571,171 @@ namespace SourceCodeBuilder
         {
             CheckAccessModifier(modifier);
             _myMethod.AccessModifiersList.Add(modifier);
+        }
+
+        public MyMethodBuilder AddAttribute(string attributeLine)
+        {
+            _myMethod.Attributes.Add(attributeLine);
+            return this;
+        }
+        public MyMethodBuilder AddAttributes(IEnumerable<string> attributeLines)
+        {
+            foreach (var attributeLine in attributeLines)
+            {
+                _myMethod.Attributes.Add(attributeLine);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Add generic type T for method
+        /// </summary>
+        /// <returns></returns>
+        public MyMethodBuilder Generic_T
+        {
+            get
+            {
+                AddGeneric("T");
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Add generic types Tkey, TValue for method
+        
+        /// </summary>
+        /// <returns></returns>
+        public MyMethodBuilder Generic_TKey_TValue
+        {
+            get
+            {
+                AddGeneric("TKey");
+                AddGeneric("TValue");
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Add generic type for method
+        /// </summary>
+        /// <returns></returns>
+        public MyMethodBuilder Generic(string generycTypeName, string genericTypeConstraint = null)
+        {
+            AddGeneric(generycTypeName, genericTypeConstraint);
+            return this;
+        }
+
+        /// <summary>
+        /// Add generic Constraint for method
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">When class not contain <param>generycTypeName</param></exception>
+        public MyMethodBuilder GenericConstraint(string generycTypeName, string genericTypeConstraint)
+        {
+            AddGenericConstraint(generycTypeName, genericTypeConstraint);
+            return this;
+        }
+
+        /// <summary>
+        /// Add list of generic types for method
+        /// </summary>
+        /// <returns></returns>
+        public MyMethodBuilder Generics(params string[] generycTypeNames)
+        {
+            foreach (var generycTypeName in generycTypeNames)
+            {
+                AddGeneric(generycTypeName);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Add list of generic types for method.
+        /// </summary>
+        /// <returns></returns>
+        public MyMethodBuilder Generics(string generycTypeNames)
+        {
+            string[] arr = generycTypeNames.Split(',');
+            foreach (var generycTypeName in arr)
+            {
+                AddGeneric(generycTypeName.Trim());
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Add generic types Tkey, TValue for method
+        /// </summary>
+        /// <returns></returns>
+        public MyMethodBuilder GenericWhere(string where)
+        {
+            _myMethod.GenericWhere = where;
+            return this;
+        }
+
+        internal void AddGeneric(string genericType, string genericTypeConstraint = null)
+        {
+            if (string.IsNullOrEmpty(genericType))
+            {
+                throw new ArgumentNullException("Generic type name");
+            }
+
+            if (_myMethod.GenericList == null)
+            {
+                _myMethod.GenericList = [];
+            }
+            else if (_myMethod.GenericList.Any(o => o == genericType))
+            {
+                throw new ArgumentException($"Generic type '{genericType}' already exits in class");
+            }
+
+            _myMethod.GenericList.Add(genericType);
+
+            if (!string.IsNullOrEmpty(genericTypeConstraint))
+            {
+                if (_myMethod.GenericConstraintDictionary == null)
+                {
+                    _myMethod.GenericConstraintDictionary = [];
+                }
+                _myMethod.GenericConstraintDictionary.Add(genericType, genericTypeConstraint);
+            }
+        }
+
+        internal void AddGenericConstraint(string genericType, string genericTypeConstraint)
+        {
+            if (string.IsNullOrEmpty(genericType))
+            {
+                throw new ArgumentNullException("Generic type name");
+            }
+
+            if (string.IsNullOrEmpty(genericTypeConstraint))
+            {
+                throw new ArgumentNullException("Generic type constraint");
+            }
+
+            if (_myMethod.GenericList == null)
+            {
+                _myMethod.GenericList = [];
+            }
+
+            if (_myMethod.GenericConstraintDictionary == null)
+            {
+                _myMethod.GenericConstraintDictionary = [];
+            }
+
+            if (_myMethod.GenericConstraintDictionary.ContainsKey(genericType))
+            {
+                throw new ArgumentNullException($"Generic type constraint already exists for generic type {genericType}");
+            }
+
+            if (!_myMethod.GenericList.Any(o => o == genericType))
+            {
+                _myMethod.GenericList.Add(genericType);
+            }
+
+            _myMethod.GenericConstraintDictionary.Add(genericType, genericTypeConstraint);
         }
 
         private void CheckAbstractConflict(MyMethod.AccessModifiers newModifier)

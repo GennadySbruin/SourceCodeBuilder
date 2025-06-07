@@ -255,6 +255,8 @@ namespace SourceCodeBuilder
             }
         }
 
+        
+
         /// <summary>
         /// Class with sealed modifier
         /// <example>
@@ -298,11 +300,49 @@ namespace SourceCodeBuilder
 
         }
 
+        /// <summary>
+        /// Add class comment
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /// MyClass.PublicClass("Program").AddComment("//Class comment").ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// //Class comment
+        /// public class Program
+        /// {
+        ///     string Name;
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
         public MyClassBuilder AddComment(string commentLine)
         {
             _myClass.Comments.Add(commentLine);
             return this;
         }
+
+        /// <summary>
+        /// Add class comments
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /// MyClass.PublicClass("Program").AddComment(["//Class comment 1", "//Class comment 2"]).ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// //Class comment 1
+        /// //Class comment 2
+        /// public class Program
+        /// {
+        ///     string Name;
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
         public MyClassBuilder AddComments(IEnumerable<string> commentLines)
         {
             foreach (var commentLine in commentLines)
@@ -550,6 +590,30 @@ namespace SourceCodeBuilder
             return this;
         }
 
+        
+        public MyClassBuilder AddConstructors(IEnumerable<MyConstructorBuilder> constructorBiulders)
+        {
+            foreach (var m in constructorBiulders)
+            {
+                AddConstructor(m);
+            }
+            return this;
+        }
+
+        public MyClassBuilder AddConstructor(MyConstructorBuilder constructorBuilder)
+        {
+            return AddConstructor(constructorBuilder?.Build());
+        }
+
+        public MyClassBuilder AddConstructor(MyConstructor constructor)
+        {
+            if (constructor != null)
+            {
+                _myClass.AddConstructor(constructor);
+            }
+            return this;
+        }
+
         /// <summary>
         /// Add base type with name
         /// <example>
@@ -613,6 +677,10 @@ namespace SourceCodeBuilder
             return this;
         }
 
+        /// <summary>
+        /// Build class with default AccessModifier
+        /// </summary>
+        /// <returns></returns>
         public MyClass Build()
         {
             SetDefaults();
@@ -630,6 +698,25 @@ namespace SourceCodeBuilder
             }
         }
 
+        public MyClassBuilder AddAttribute(string attributeLine)
+        {
+            _myClass.Attributes.Add(attributeLine);
+            return this;
+        }
+        public MyClassBuilder AddAttributes(IEnumerable<string> attributeLines)
+        {
+            foreach (var attributeLine in attributeLines)
+            {
+                _myClass.Attributes.Add(attributeLine);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Check access modifier combinations
+        /// </summary>
+        /// <param name="newModifier"></param>
+        /// <exception cref="ArgumentException"></exception>
         public virtual void CheckAccessModifier(MyClass.AccessModifiers newModifier)
         {
             if (_myClass.AccessModifiersList.Contains(newModifier))
@@ -729,6 +816,24 @@ namespace SourceCodeBuilder
                 AddGeneric(generycTypeName.Trim());
             }
 
+            return this;
+        }
+
+        /// <summary>
+        /// Add generic types Tkey, TValue for class
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyClassBuilder.Name("Program").Generic_TKey_TValue.GenericWhere("TValue : class").ToString();
+        /// </code>
+        /// result:
+        /// <code><c>class Program>Tkey, TValue> where TValue : class { }</c></code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyClassBuilder GenericWhere(string where)
+        {
+            _myClass.GenericWhere = where;
             return this;
         }
 

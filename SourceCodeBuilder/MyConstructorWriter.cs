@@ -8,21 +8,20 @@ using System.Xml.Schema;
 
 namespace SourceCodeBuilder
 {
-    public class MyMethodWriter : ICodeWriter<MyMethod>
+    public class MyConstructorWriter : ICodeWriter<MyConstructor>
     {
-        private static ICodeWriter<MyMethod>? s_instance;
+        private static ICodeWriter<MyConstructor>? s_instance;
         private readonly System.Threading.Lock _writerLock = new();
-        private bool writeForComments = false;
         /// <summary>
         /// Reusable static formatter
         /// </summary>
-        public static ICodeWriter<MyMethod> Formatter
+        public static ICodeWriter<MyConstructor> Formatter
         {
             get
             {
                 if (s_instance == null)
                 {
-                    s_instance = new MyMethodWriter();
+                    s_instance = new MyConstructorWriter();
                 }
                 s_instance.Clear();
                 return s_instance;
@@ -55,11 +54,11 @@ namespace SourceCodeBuilder
         {
             _hasValue = false;
         }
-        public string WriteCode(MyMethod o)
+        public string WriteCode(MyConstructor o)
         {
             if(o == null)
             {
-                throw new ArgumentNullException("MyMethod o");
+                throw new ArgumentNullException("MyConstructor o");
             }
             using MemoryStream memoryStream = new MemoryStream();
             using StreamWriter streamWriter = new StreamWriter(memoryStream);
@@ -69,53 +68,29 @@ namespace SourceCodeBuilder
         }
 
         TextWriter? _writer = null;
-        public void GenerateCode(MyMethod o, TextWriter writer, string tabs = "", bool forComments = false)
+        public void GenerateCode(MyConstructor o, TextWriter writer, string tabs = "", bool forComments = false)
         {
             if (o == null)
             {
-                throw new ArgumentNullException("MyMethod o");
+                throw new ArgumentNullException("MyConstructor o");
             }
             lock (_writerLock)
             {
                 Clear();
                 _parentTabs = tabs;
                 _writer = writer;
-                writeForComments = forComments;
-                SetComments(o, forComments);
-                SetAttributes(o, forComments);
+                SetComments(o, o.ClassName, forComments);
+                SetAttributes(o);
                 SetAccessModifiers(o);
-                SetAsync(o);
-                SetType(o);
-                SetName(o);
-                SetGeneric(o);
+                SetName(o.ClassName);
                 SetParameters(o);
-                SetGenericWhere(o);
                 SetLambdaExpression(o);
+                SetBaseConstructor(o);
                 SetBody(o);
             }
         }
 
-        public void GenerateCodeForInterface(MyMethod o, TextWriter writer, string tabs = "", bool forComments = false)
-        {
-            if (o == null)
-            {
-                throw new ArgumentNullException("MyMethod o");
-            }
-            lock (_writerLock)
-            {
-                Clear();
-                _parentTabs = tabs;
-                _writer = writer;
-                SetComments(o, forComments);
-                SetType(o);
-                SetName(o);
-                SetGeneric(o);
-                SetParameters(o);
-                Write(";");
-            }
-        }
-
-        public virtual void SetComments(MyMethod o, bool forComments)
+        public virtual void SetComments(MyConstructor o, string className, bool forComments)
         {
             if (forComments)
             {
@@ -124,7 +99,7 @@ namespace SourceCodeBuilder
 
             if (o.AutoGenerateComments)
             {
-                GenerateComments(o);
+                GenerateComments(o, className);
             }
             else
             {
@@ -140,13 +115,8 @@ namespace SourceCodeBuilder
             }
         }
 
-        public virtual void SetAttributes(MyMethod o, bool forComments)
+        public virtual void SetAttributes(MyConstructor o)
         {
-            if (forComments)
-            {
-                return;
-            }
-
             if (o.Attributes?.Count > 0)
             {
                 foreach (var attribute in o.Attributes ?? [])
@@ -157,7 +127,7 @@ namespace SourceCodeBuilder
             }
         }
 
-        public virtual void SetAccessModifiers(MyMethod o)
+        public virtual void SetAccessModifiers(MyConstructor o)
         {
             foreach(var a in o.AccessModifiersList)
             {
@@ -165,20 +135,7 @@ namespace SourceCodeBuilder
             }
         }
 
-        public virtual void SetAsync(MyMethod o)
-        {
-            if (o.Async)
-            {
-                Write($"{_}async");
-            }
-            
-        }
-        public virtual void SetType(MyMethod o)
-        {
-            Write($"{_}{o.MethodReturnTypeName}");
-        }
-
-        public virtual void SetLambdaExpression(MyMethod o)
+        public virtual void SetLambdaExpression(MyConstructor o)
         {
             if (string.IsNullOrEmpty(o.LambdaExpression))
             {
@@ -187,7 +144,16 @@ namespace SourceCodeBuilder
             Write($"{_}{o.LambdaExpression}");
         }
 
-        public virtual void SetParameters(MyMethod o)
+        public virtual void SetBaseConstructor(MyConstructor o)
+        {
+            if (string.IsNullOrEmpty(o.BaseConstructorExpression))
+            {
+                return;
+            }
+            Write($" :{_}{o.BaseConstructorExpression}");
+        }
+
+        public virtual void SetParameters(MyConstructor o)
         {
             Write($"(");
             string q = string.Empty;
@@ -199,7 +165,7 @@ namespace SourceCodeBuilder
             Write($")");
         }
 
-        public virtual void SetBody(MyMethod o)
+        public virtual void SetBody(MyConstructor o)
         {
             if (!string.IsNullOrEmpty(o.LambdaExpression))
             {
@@ -209,7 +175,7 @@ namespace SourceCodeBuilder
             {
                 Write(Environment.NewLine);
                 Write(defaultStartCodeBlockStatement);
-                o.MyCode.BuildCode(_writer, _parentTabs, writeForComments);
+                o.MyCode.BuildCode(_writer, _parentTabs);
                 Write(Environment.NewLine);
                 Write(defaultEndCodeBlockStatement);
             }
@@ -220,56 +186,22 @@ namespace SourceCodeBuilder
             }
         }
 
-        public virtual void SetName(MyMethod o)
+        public virtual void SetName(string className)
         {
-            Write($"{_}{o.MethodName}");
+            Write($"{_}{className}");
         }
 
-        public virtual void SetGeneric(MyMethod o)
-        {
-            if (o.GenericList == null || o.GenericList.Count == 0)
-            {
-                return;
-            }
-            Write($"<");
-
-            string q = string.Empty;
-            foreach (string baseClass in o.GenericList)
-            {
-                Write($"{q}{baseClass}");
-                q = $",{_}";
-            }
-            Write($">");
-        }
-
-        public virtual void SetGenericWhere(MyMethod o)
-        {
-            if (string.IsNullOrEmpty(o.GenericWhere))
-            {
-                return;
-            }
-            Write($" where {o.GenericWhere}");
-        }
-
-        public virtual string? AccessModifierToString(MyMethod.AccessModifiers? accessModifier)
+        public virtual string? AccessModifierToString(MyConstructor.AccessModifiers? accessModifier)
         {
             return accessModifier?.ToString()?.ToLower();
         }
 
         public virtual void Write(string value)
         {
-            if (writeForComments)
-            {
-                _writer?.Write(value.Replace(Environment.NewLine, Environment.NewLine + _parentTabs).Replace("<", ">"));
-            }
-            else
-            {
-                _writer?.Write(value.Replace(Environment.NewLine, Environment.NewLine + _parentTabs));
-            }
-            
+            _writer?.Write(value.Replace(Environment.NewLine, Environment.NewLine +_parentTabs));
         }
 
-        private void GenerateComments(MyMethod o)
+        private void GenerateComments(MyConstructor o, string className)
         {
             _writer.Write(Environment.NewLine + _parentTabs + "/// <summary>");
             foreach (var c in o.Comments ?? [])
@@ -281,8 +213,8 @@ namespace SourceCodeBuilder
             _writer.Write(Environment.NewLine + _parentTabs + "/// <code>");
             //Write($"{Environment.NewLine}");
             _writer?.Write(Environment.NewLine);
-            MyMethodWriter myMethodWriter = new MyMethodWriter();
-            myMethodWriter.GenerateCode(o, _writer, _parentTabs + "/// ", true);
+            MyConstructorWriter myConstructorWriter = new MyConstructorWriter();
+            myConstructorWriter.GenerateCode(o, _writer, _parentTabs + "/// ", true);
             _writer.Write(Environment.NewLine + _parentTabs + "/// </code>");
             _writer.Write(Environment.NewLine + _parentTabs + "/// </example>");
             _writer.Write(Environment.NewLine + _parentTabs + "/// </summary>");

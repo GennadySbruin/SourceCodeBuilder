@@ -12,9 +12,12 @@
         public List<string>? BaseClassList { get; set; }
         public Dictionary<string, string>? GenericConstraintDictionary { get; set; }
         public List<string>? GenericList { get; set; }
+        public string GenericWhere { get; set; }
         public List<MyField>? Fields { get; set; }
         public List<MyProperty>? Properties { get; set; }
         public List<MyMethod>? Methods { get; set; }
+        public List<MyConstructor>? Constructors { get; set; }
+        public List<string> Attributes { get; set; } = [];
         public List<MyClass>? Classes { get; set; }
         public List<string> Comments { get; set; } = [];
         public List<AccessModifiers?> AccessModifiersList { get; set; } = [];
@@ -29,8 +32,6 @@
             Protected,
             Partial
         }
-
-        //public string Tabs = string.Empty;
 
         /// <summary>
         /// Class with private access. Use only for nested types
@@ -194,7 +195,10 @@
             }
         }
 
-
+        /// <summary>
+        /// Add class field
+        /// </summary>
+        /// <param name="field"></param>
         public void AddField(MyField field)
         {
             if(Fields == null)
@@ -204,6 +208,10 @@
             Fields.Add(field);
         }
 
+        /// <summary>
+        /// Add class property
+        /// </summary>
+        /// <param name="property"></param>
         public void AddProperty(MyProperty property)
         {
             if (Properties == null)
@@ -213,6 +221,10 @@
             Properties.Add(property);
         }
 
+        /// <summary>
+        /// Add class method
+        /// </summary>
+        /// <param name="method"></param>
         public void AddMethod(MyMethod method)
         {
             if (Methods == null)
@@ -222,11 +234,33 @@
             Methods.Add(method);
         }
 
+        /// <summary>
+        /// Add class method
+        /// </summary>
+        /// <param name="method"></param>
+        public void AddConstructor(MyConstructor constructor)
+        {
+            if (Constructors == null)
+            {
+                Constructors = [];
+            }
+            Constructors.Add(constructor);
+        }
+
+        /// <summary>
+        /// Generate code
+        /// </summary>
+        /// <returns></returns>
         public override string? ToString()
         {
             return ToString(new MyClassWriter());
         }
 
+        /// <summary>
+        /// Generate code
+        /// </summary>
+        /// <param name="formatter"></param>
+        /// <returns></returns>
         public string? ToString(ICodeWriter<MyClass> formatter)
         {
             return formatter?.WriteCode(this);

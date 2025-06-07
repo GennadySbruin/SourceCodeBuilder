@@ -45,6 +45,7 @@ namespace SourceCodeBuilderTest
             Assert.IsTrue(Test(MyClass.Public.Name("Service").Generics("T1", "T2"), "public class Service<T1, T2>\r\n{\r\n}"));
             Assert.IsTrue(Test(MyClass.Public.Name("Service").Generic_T, "public class Service<T>\r\n{\r\n}"));
             Assert.IsTrue(Test(MyClass.Public.Name("Service").Generic_TKey_TValue, "public class Service<TKey, TValue>\r\n{\r\n}"));
+            Assert.IsTrue(Test(MyClass.Public.Name("Service").Generic_TKey_TValue.GenericWhere("TValue : class"), "public class Service<TKey, TValue> where TValue : class\r\n{\r\n}"));
 
             TestContext.Write(_stringBuilder.ToString());
         }

@@ -27,7 +27,7 @@ public class TestCycleStatement
             MyCodeExpressionBuilder.Start()
             .For("int i = 0; i < 100; i++")
                 .AddLine("Console.WriteLine(\"i\");")
-            .ExitCicle;
+            .EndCycle;
 
         Assert.IsTrue(Test(generated, example));
         TestContext.Write(_stringBuilder.ToString());
@@ -42,7 +42,7 @@ public class TestCycleStatement
             MyCodeExpressionBuilder.Start()
             .Foreach("var name in names")
                 .AddLine("Console.WriteLine(\"name\");")
-            .ExitCicle;
+            .EndCycle;
 
         Assert.IsTrue(Test(generated, example));
         TestContext.Write(_stringBuilder.ToString());
@@ -57,7 +57,7 @@ public class TestCycleStatement
             MyCodeExpressionBuilder.Start()
             .Foreach("var", "name", "names")
                 .AddLine("Console.WriteLine(\"name\");")
-            .ExitCicle;
+            .EndCycle;
 
         Assert.IsTrue(Test(generated, example));
         TestContext.Write(_stringBuilder.ToString());
@@ -72,7 +72,7 @@ public class TestCycleStatement
             MyCodeExpressionBuilder.Start()
             .While("true")
                 .AddLine("Console.WriteLine(\"name\");")
-            .ExitCicle;
+            .EndCycle;
 
         Assert.IsTrue(Test(generated, example));
         TestContext.Write(_stringBuilder.ToString());

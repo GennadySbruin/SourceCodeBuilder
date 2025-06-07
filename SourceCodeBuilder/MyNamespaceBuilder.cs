@@ -82,6 +82,42 @@ namespace SourceCodeBuilder
         }
 
         /// <summary>
+        /// Add classes
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /// MyNamespace.AddClass(......).ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// namespace MyNamespace
+        /// {
+        ///     public class Program1
+        ///     {
+        ///         string Name1;
+        ///     }
+        ///     public class Program2
+        ///     {
+        ///         string Name2;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyNamespaceBuilder AddClasses(IEnumerable<MyClassBuilder>? myClassBuilders)
+        {
+            foreach(var myClassBuilder in myClassBuilders ?? [])
+            {
+                if (myClassBuilder != null)
+                {
+                    _myNamespace.AddClass(myClassBuilder);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Add interface
         /// <example>
         /// <para>Example:</para>
@@ -139,6 +175,38 @@ namespace SourceCodeBuilder
             }
             return this;
 
+        }
+
+        /// <summary>
+        /// Add interface
+        /// <example>
+        /// <para>Example:</para>
+        /// <code>
+        /// MyNamespace.AddInterface(......).ToString();
+        /// </code>
+        /// result:
+        /// <code>
+        /// namespace MyNamespace
+        /// {
+        ///     public interface Program
+        ///     {
+        ///         string Name;
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyNamespaceBuilder AddInterfaces(IEnumerable<MyInterfaceBuilder>? myInterfaceBuilders)
+        {
+            foreach (var myInterfaceBuilder in myInterfaceBuilders ?? [])
+            {
+                if (myInterfaceBuilder != null)
+                {
+                    _myNamespace.AddInterface(myInterfaceBuilder);
+                }
+            }
+            return this;
         }
 
         /// <summary>

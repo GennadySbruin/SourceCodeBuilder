@@ -4,6 +4,26 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>CodeGeneratorBuilder</PackageId>
+    <Title>Builder for making generated code</Title>
+    <Version>1.0.11</Version>
+    <Authors>Gennady Sbruin</Authors>
+    <Company>Gennady Sbruin</Company>
+    <Product>SourceCodeBuilder</Product>
+    <Description>Builder for making generated code</Description>
+    <PackageProjectUrl>https://github.com/GennadySbruin/SourceCodeBuilder/settings</PackageProjectUrl>
+    <PackageTags>Generator; CodeBuilder</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

@@ -39,7 +39,7 @@ namespace SourceCodeBuilder
             }
         }
 
-        internal void BuildCode(TextWriter writer, string _defaultTabs = "")
+        internal void BuildCode(TextWriter writer, string _defaultTabs = "", bool forComments = false)
         {
             if (!string.IsNullOrEmpty(StringExpression))
             {
@@ -49,7 +49,14 @@ namespace SourceCodeBuilder
                 }
                 else
                 {
-                    writer.Write(StringExpression.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs));
+                    if (forComments)
+                    {
+                        writer.Write(StringExpression.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs).Replace("<",">"));
+                    }
+                    else
+                    {
+                        writer.Write(StringExpression.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs));
+                    }
                 }
                 
             }
@@ -474,7 +481,32 @@ namespace SourceCodeBuilder
         internal MyCodeExpression OrOr => Add(OrOrExpression);
         internal MyCodeExpression If => Add(StartIfConditionExpression);
         internal MyCodeExpression Switch => Add(SwitchExpression);
+
+        /// <summary>
+        /// Expression 'case'
+        /// <example>
+        /// <code>
+        /// switch (variable) 
+        /// {
+        ///     case x : ....
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
         internal MyCodeExpression Case => Add(CaseExpression);
+
+        /// <summary>
+        /// Expression 'default:'
+        /// <example>
+        /// <code>
+        /// switch (variable) 
+        /// {
+        ///     case x : ....
+        ///     default:
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
         internal MyCodeExpression SwitchDefault => Add(SwitchDefaultExpression);
         internal MyCodeExpression For => Add(ForExpression);
         internal MyCodeExpression Foreach => Add(ForeachExpression);

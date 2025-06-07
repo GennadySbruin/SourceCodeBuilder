@@ -70,6 +70,7 @@ namespace SourceCodeBuilder
         //public string Tabs = string.Empty;
         public List<AccessModifiers?> AccessModifiersList { get; set; } = [];
         public List<string> Comments { get; set; } = [];
+        public List<string> Attributes { get; set; } = [];
         public enum AccessModifiers
         {
             Static,

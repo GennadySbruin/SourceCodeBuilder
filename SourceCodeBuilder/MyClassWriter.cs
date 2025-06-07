@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using System.Xml.Schema;
 
 namespace SourceCodeBuilder
@@ -16,6 +17,7 @@ namespace SourceCodeBuilder
         public MyPropertyWriter PropertyWriter { get; set; } = new MyPropertyWriter();
         public MyFieldWriter FieldWriter { get; set; } = new MyFieldWriter();
         public MyMethodWriter MethodWriter { get; set; } = new MyMethodWriter();
+        public MyConstructorWriter ConstructorWriter { get; set; } = new MyConstructorWriter();
 
         /// <summary>
         /// Reusable static formatter
@@ -84,11 +86,13 @@ namespace SourceCodeBuilder
                 _parentTabs = tabs;
                 _writer = writer;
                 SetComments(o);
+                SetAttributes(o);
                 SetAccessModifiers(o);
                 SetType(o);
                 SetName(o);
                 SetGeneric(o);
                 SetBase(o);
+                SetGenericWhere(o);
                 SetStartMembers(o);
                 SetMembers(o);
                 SetEndMembers(o);
@@ -97,10 +101,26 @@ namespace SourceCodeBuilder
 
         public virtual void SetComments(MyClass o)
         {
-            foreach (var c in o.Comments ?? [])
+            if(o.Comments?.Count > 0)
             {
-                string comment = c.StartsWith("//") ? c : $"//{c}";
-                Write($"{Environment.NewLine}{comment}");
+                foreach (var c in o.Comments ?? [])
+                {
+                    string comment = c.StartsWith("//") ? c : $"//{c}";
+                    Write($"{Environment.NewLine}{comment}");
+                }
+                _writer?.Write($"{Environment.NewLine}");
+            }
+        }
+
+        public virtual void SetAttributes(MyClass o)
+        {
+            if (o.Attributes?.Count > 0)
+            {
+                foreach (var attribute in o.Attributes ?? [])
+                {
+                    Write($"{Environment.NewLine}{attribute}");
+                }
+                _writer?.Write($"{Environment.NewLine}");
             }
         }
         public virtual void SetAccessModifiers(MyClass o)
@@ -153,7 +173,14 @@ namespace SourceCodeBuilder
                 q = ",";
             }
         }
-
+        public virtual void SetGenericWhere(MyClass o)
+        {
+            if (string.IsNullOrEmpty(o.GenericWhere))
+            {
+                return;
+            }
+            Write($" where {o.GenericWhere}");
+        }
         public virtual void SetStartMembers(MyClass o)
         {
             Write(Environment.NewLine);
@@ -164,19 +191,22 @@ namespace SourceCodeBuilder
         {
             foreach(MyField field in o.Fields ?? [])
             {
-                //Write(Environment.NewLine);
                 _writer?.Write(Environment.NewLine);
                 FieldWriter.GenerateCode(field, _writer, _parentTabs + _defaultTabs);
             }
             foreach (MyProperty property in o.Properties ?? [])
             {
-                //Write(Environment.NewLine);
                 _writer?.Write(Environment.NewLine);
                 PropertyWriter.GenerateCode(property, _writer, _parentTabs + _defaultTabs);
             }
+            foreach (MyConstructor constructor in o.Constructors ?? [])
+            {
+                _writer?.Write(Environment.NewLine);
+                constructor.ClassName = o.ClassName;
+                ConstructorWriter.GenerateCode(constructor, _writer, _parentTabs + _defaultTabs);
+            }
             foreach (MyMethod method in o.Methods ?? [])
             {
-                //Write(Environment.NewLine);
                 _writer?.Write(Environment.NewLine);
                 MethodWriter.GenerateCode(method, _writer, _parentTabs + _defaultTabs);
             }

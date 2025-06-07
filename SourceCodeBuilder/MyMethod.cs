@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,7 +60,11 @@ namespace SourceCodeBuilder
 
 
         public List<string> Comments { get; set; } = [];
+        public List<string> Attributes { get; set; } = [];
         public bool AutoGenerateComments { get; set; } = false;
+        public Dictionary<string, string>? GenericConstraintDictionary { get; set; }
+        public List<string>? GenericList { get; set; }
+        public string GenericWhere { get; set; }
         public bool Async { get; set; }
 
         public MyCodeExpression MyCode = new();

@@ -370,6 +370,20 @@ namespace SourceCodeBuilder
             return this;
         }
 
+        public MyInterfaceBuilder AddAttribute(string attributeLine)
+        {
+            _myInterface.Attributes.Add(attributeLine);
+            return this;
+        }
+        public MyInterfaceBuilder AddAttributes(IEnumerable<string> attributeLines)
+        {
+            foreach (var attributeLine in attributeLines)
+            {
+                _myInterface.Attributes.Add(attributeLine);
+            }
+            return this;
+        }
+
         public MyInterface Build()
         {
             SetDefaults();

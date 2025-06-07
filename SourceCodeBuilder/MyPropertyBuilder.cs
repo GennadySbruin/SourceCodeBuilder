@@ -808,6 +808,20 @@ namespace SourceCodeBuilder
             return this;
         }
 
+        public MyPropertyBuilder AddAttribute(string attributeLine)
+        {
+            _myProperty.Attributes.Add(attributeLine);
+            return this;
+        }
+        public MyPropertyBuilder AddAttributes(IEnumerable<string> attributeLines)
+        {
+            foreach (var attributeLine in attributeLines)
+            {
+                _myProperty.Attributes.Add(attributeLine);
+            }
+            return this;
+        }
+
         /// <summary>
         /// Convert this property to result code string with default formatter.
         /// </summary>

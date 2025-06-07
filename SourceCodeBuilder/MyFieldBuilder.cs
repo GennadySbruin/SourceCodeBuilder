@@ -303,6 +303,20 @@ namespace SourceCodeBuilder
             return this;
         }
 
+        public MyFieldBuilder AddAttribute(string attributeLine)
+        {
+            _myField.Attributes.Add(attributeLine);
+            return this;
+        }
+        public MyFieldBuilder AddAttributes(IEnumerable<string> attributeLines)
+        {
+            foreach (var attributeLine in attributeLines)
+            {
+                _myField.Attributes.Add(attributeLine);
+            }
+            return this;
+        }
+
         /// <summary>
         /// Set initial expression from string.
         /// <example>

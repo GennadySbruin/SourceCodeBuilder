@@ -60,6 +60,9 @@ namespace SourceCodeBuilderTest
 
             Assert.IsTrue(Test(MyMethod.PublicInt(MethodName+"Async").Async, "public async int MethodNameAsync() { }"));
 
+            Assert.IsTrue(Test(MyMethod.Guid(MethodName).Generic("T"), "Guid MethodName<T>() { }"));
+            Assert.IsTrue(Test(MyMethod.Guid(MethodName).Generic("T").GenericWhere("T : class"), "Guid MethodName<T>() where T : class { }"));
+
             TestContext.Write(_stringBuilder.ToString());
         }
 

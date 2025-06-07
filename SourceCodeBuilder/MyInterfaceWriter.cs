@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using System.Xml.Schema;
 
 namespace SourceCodeBuilder
@@ -82,6 +83,7 @@ namespace SourceCodeBuilder
                 _parentTabs = tabs;
                 _writer = writer;
                 SetComments(o);
+                SetAttributes(o);
                 SetAccessModifiers(o);
                 SetType(o);
                 SetName(o);
@@ -95,12 +97,29 @@ namespace SourceCodeBuilder
 
         public virtual void SetComments(MyInterface o)
         {
-            foreach (var c in o.Comments ?? [])
+            if(o.Comments?.Count > 0)
             {
-                string comment = c.StartsWith("//") ? c : $"//{c}";
-                Write($"{Environment.NewLine}{comment}");
+                foreach (var c in o.Comments ?? [])
+                {
+                    string comment = c.StartsWith("//") ? c : $"//{c}";
+                    Write($"{Environment.NewLine}{comment}");
+                }
+                _writer?.Write($"{Environment.NewLine}");
             }
         }
+
+        public virtual void SetAttributes(MyInterface o)
+        {
+            if (o.Attributes?.Count > 0)
+            {
+                foreach (var attribute in o.Attributes ?? [])
+                {
+                    Write($"{Environment.NewLine}{attribute}");
+                }
+                _writer?.Write($"{Environment.NewLine}");
+            }
+        }
+
         public virtual void SetAccessModifiers(MyInterface o)
         {
             foreach(var a in o.AccessModifiersList)
