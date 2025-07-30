@@ -106,7 +106,7 @@ namespace SourceCodeBuilder
                         .Add("in")._
                         .Add(iEnumerable)
                     .CloseBracket
-                .NewLine.StartCodeBlock.This();
+                .NewLine.Add(Tabs).StartCodeBlock.This();
             CycleExpressionBuilder caseExpressionBuilder = new CycleExpressionBuilder(this, _myCode);
             return caseExpressionBuilder;
         }

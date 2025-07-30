@@ -84,6 +84,7 @@ namespace SourceCodeBuilder
                 SetAccessModifiers(o);
                 SetName(o.ClassName);
                 SetParameters(o);
+                SetBase(o);
                 SetLambdaExpression(o);
                 SetBaseConstructor(o);
                 SetBody(o);
@@ -163,6 +164,15 @@ namespace SourceCodeBuilder
                 q = ", ";
             }
             Write($")");
+        }
+
+        public virtual void SetBase(MyConstructor o)
+        {
+            if (!string.IsNullOrEmpty(o.Base))
+            {
+                Write($" : base{o.Base}");
+            }
+            
         }
 
         public virtual void SetBody(MyConstructor o)

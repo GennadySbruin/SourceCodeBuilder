@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SourceCodeBuilder.Html\SourceCodeBuilder.Html.csproj" />
     <ProjectReference Include="..\SourceCodeBuilder\SourceCodeBuilder.csproj" />
   </ItemGroup>
 

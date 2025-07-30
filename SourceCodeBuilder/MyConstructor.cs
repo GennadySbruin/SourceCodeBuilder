@@ -60,6 +60,8 @@ namespace SourceCodeBuilder
 
         public List<string> Comments { get; set; } = [];
         public List<string> Attributes { get; set; } = [];
+
+        public string? Base { get; set; }
         public bool AutoGenerateComments { get; set; } = false;
         public bool Async { get; set; }
 

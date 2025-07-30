@@ -170,6 +170,22 @@ namespace SourceCodeBuilder
         }
 
         /// <summary>
+        /// Set base constructor.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public MyConstructorBuilder Base(string baseBody)
+        {
+            if (string.IsNullOrEmpty(baseBody))
+            {
+                throw new ArgumentNullException("baseBody");
+            }
+            _myConstructor.Base = baseBody;
+
+            return this;
+        }
+
+        /// <summary>
         /// Add line to method body.
         /// <example>
         /// <para>For example:</para>
