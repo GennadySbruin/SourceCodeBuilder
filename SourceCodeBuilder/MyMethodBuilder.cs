@@ -123,6 +123,27 @@ namespace SourceCodeBuilder
             }
         }
 
+        /// <summary>
+        /// Method with override modifier.
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyMethodBuilder.Public.Override.Type("string").Name("GetDescription").ToString();
+        /// </code>
+        /// result:
+        /// <para><c>public override string GetDescription() { }</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyMethodBuilder Override
+        {
+            get
+            {
+                SetAccessModifier(MyMethod.AccessModifiers.Override);
+                return this;
+            }
+        }
+
         public virtual void CheckAccessModifier(MyMethod.AccessModifiers newModifier)
         {
             if (_myMethod.AccessModifiersList.Contains(newModifier))

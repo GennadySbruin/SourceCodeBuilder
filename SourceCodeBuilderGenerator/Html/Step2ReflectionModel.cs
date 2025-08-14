@@ -31,7 +31,7 @@ namespace SourceCodeBuilderGenerator.Html
                 }
                 else
                 {
-                    value.CsName = field.Name;
+                    value.CsName ??= field.Name;
                 }
                 if (value.UseGlobalAttributes)
                 {

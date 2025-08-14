@@ -29,7 +29,7 @@ namespace SourceCodeBuilder
         }
         public void AddClass(MyClass myClass)
         {
-            if(ClassList.Any(o=>o.ClassName == myClass.ClassName))
+            if(ClassList.Any(o=>o.ClassName == myClass.ClassName && o.GenericList?.Count == myClass.GenericList?.Count))
             {
                 throw new ArgumentException($"Class with name {myClass.ClassName} already exists in namespace {NamespaceName}");
             }

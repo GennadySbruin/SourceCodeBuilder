@@ -122,6 +122,27 @@ namespace SourceCodeBuilder
             }
         }
 
+        /// <summary>
+        /// Property with abstruct modifier. Use only in abstract class
+        /// <example>
+        /// <para>For example:</para>
+        /// <code>
+        /// MyPropertyBuilder.Public.Override.Type("string").Name("Description").ToString();
+        /// </code>
+        /// result:
+        /// <para><c>public override string Description { get; set; }</c></para>
+        /// </example>
+        /// </summary>
+        /// <returns></returns>
+        public MyPropertyBuilder Override
+        {
+            get
+            {
+                SetAccessModifier(MyProperty.AccessModifiers.Override);
+                return this;
+            }
+        }
+
         public virtual void CheckAccessModifier(MyProperty.AccessModifiers newModifier)
         {
             if (_myProperty.AccessModifiersList.Contains(newModifier))

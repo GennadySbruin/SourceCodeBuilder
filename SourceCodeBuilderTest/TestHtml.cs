@@ -128,6 +128,21 @@ namespace SourceCodeBuilderTest
             TestContext.Write(_stringBuilder.ToString());
         }
 
+        [TestMethod]
+        public void TestHtml8()
+        {
+            var html = HtmlBuilder
+                .html
+                    .html
+                        .Tag("userTag")
+                        .tag_
+                    .html_
+                .html_;
+            string template = "<html>\r\n  <html>\r\n    <userTag>\r\n    </userTag>\r\n  </html>\r\n</html>\r\n";
+            Assert.IsTrue(Test(html, template));
+            TestContext.Write(_stringBuilder.ToString());
+        }
+
         private bool Test(HtmlBuilder builder, string code)
         {
             string result = builder.ToString();

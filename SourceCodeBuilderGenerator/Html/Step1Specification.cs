@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +21,27 @@ namespace SourceCodeBuilderGenerator.Html
 
     internal class Step1Specification
     {
+
+#if DEBUG
+    #region html
+        tag a =    new tag(attributes: ["download", "href", "hreflang", "media", "ping", "referrerpolicy", "rel", "target", "type"]);
+        tag code;
+        tag div;
+        tag html = new tag(attributes: ["xmlns"]);
+    #endregion
+
+        #region razorCode
+        tag @razorpage = new tag { CsName = "@razorpage",  TagType = tag.TagTypes.RazorPage,      UseGlobalAttributes = false, UseEventsAttributes = false, UserParentTags = ["_"] };
+        tag @foreach =   new tag { CsName = "@foreach",    TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @if =        new tag { CsName = "@if",         TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @else =      new tag { CsName = "@else",       TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+
+        tag @page =      new tag { CsName = "@page",       TagType = tag.TagTypes.RazorLine,      UseGlobalAttributes = false, UseEventsAttributes = false };
+
+        tag @razorcodeblock = new tag { CsName = "@razorcodeblock", WriteName = "@code", TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        #endregion
+#else
+    #region html
         tag a = new tag(attributes: ["download", "href", "hreflang", "media", "ping", "referrerpolicy", "rel", "target", "type"]);
         tag abbr;
         tag address;
@@ -27,7 +50,7 @@ namespace SourceCodeBuilderGenerator.Html
         tag aside;
         tag audio = new tag(userChildTags: ["source"], attributes: ["autoplay", "controls", "loop", "muted", "preload", "src"]);
         tag b;
-        tag base_ = new(name: "base", userParentTags: ["head"], attributes: ["href", "target"]);
+        tag base_tag = new(name: "base_tag", userParentTags: ["head"], attributes: ["href", "target"]) { WriteName = "base"};
         tag bdi;
         tag bdo = new tag(attributes: ["dir"]);
         tag blockquote = new tag(attributes: ["cite"]);
@@ -35,7 +58,7 @@ namespace SourceCodeBuilderGenerator.Html
         tag br;
         tag button = new tag(attributes: ["autofocus", "disabled", "form", "formaction", "formenctype", "formmethod", "formnovalidate", "formtarget", "popovertarget", "popovertargetaction", "name", "type", "value"]);
         tag canvas = new tag(attributes: ["height", "width"]);
-        tag caption = new tag(userChildTags:[], userParentTags: ["table"]);
+        tag caption = new tag(userChildTags: [], userParentTags: ["table"]);
         tag cite;
         tag code;
         tag col = new tag(userParentTags: ["colgroup"]);
@@ -56,14 +79,14 @@ namespace SourceCodeBuilderGenerator.Html
         tag figcaption = new tag(userParentTags: ["figure"]);
         tag figure;
         tag footer;
-        tag form = new tag(userChildTags:["input", "textarea", "button", "select", "option", "optgroup", "fieldset", "label", "output"], attributes: ["action", "autocomplete", "enctype", "method", "name", "novalidate", "rel", "target"]);
+        tag form = new tag(userChildTags: ["input", "textarea", "button", "select", "option", "optgroup", "fieldset", "label", "output"], attributes: ["action", "autocomplete", "enctype", "method", "name", "novalidate", "rel", "target"]);
         tag h1;
         tag h2;
         tag h3;
         tag h4;
         tag h5;
         tag h6;
-        tag head = new tag(userParentTags: ["html"], userChildTags: ["title", "style", "base", "link", "meta", "script", "noscript"], useEventsAttributes:false);
+        tag head = new tag(userParentTags: ["html"], userChildTags: ["title", "style", "base", "link", "meta", "script", "noscript"], useEventsAttributes: false);
         tag header;
         tag hgroup;
         tag hr;
@@ -79,14 +102,14 @@ namespace SourceCodeBuilderGenerator.Html
         tag li = new tag(userParentTags: ["ol", "ul", "menu"], attributes: ["value"]);
         tag link = new tag(attributes: ["crossorigin", "href", "hreflang", "media", "referrerpolicy", "rel", "sizes", "title", "type"]);
         tag main;
-        tag map = new tag(attributes:["name"], userChildTags: ["area"]);
+        tag map = new tag(attributes: ["name"], userChildTags: ["area"]);
         tag mark;
         tag menu = new tag(userChildTags: ["li"]);
-        tag meta = new tag(userParentTags:["head"], attributes: ["charset", "content", "name"], useEventsAttributes: false);
+        tag meta = new tag(userParentTags: ["head"], attributes: ["charset", "content", "name"], useEventsAttributes: false);
         tag meter = new tag(attributes: ["form", "high", "low", "max", "min", "optimum", "value"]);
         tag nav;
-        tag noscript = new tag(userChildTags: ["link","style","meta"], userParentTags: ["head", "body"]);
-        tag object_ = new tag(name: "object", attributes: ["data", "form", "height", "name", "type", "typemustmatch", "usemap", "width"]);
+        tag noscript = new tag(userChildTags: ["link", "style", "meta"], userParentTags: ["head", "body"]);
+        tag object_tag = new tag(name: "object_tag", attributes: ["data", "form", "height", "name", "type", "typemustmatch", "usemap", "width"]) { WriteName = "object"};
         tag ol = new tag(userChildTags: ["li"], attributes: ["reversed", "start", "type"]);
         tag optgroup = new tag(userParentTags: ["select"], attributes: ["disabled", "label"]);
         tag option = new tag(userParentTags: ["select", "optgroup", "datalist"], attributes: ["disabled", "label", "selected", "value"]);
@@ -101,7 +124,7 @@ namespace SourceCodeBuilderGenerator.Html
         tag ruby = new tag(userChildTags: ["rp", "rt"]);
         tag s;
         tag samp;
-        tag script = new tag(attributes: ["async", "crossorigin", "defer", "integrity", "nomodule", "referrerpolicy", "src", "type"], useEventsAttributes:false);
+        tag script = new tag(attributes: ["async", "crossorigin", "defer", "integrity", "nomodule", "referrerpolicy", "src", "type"], useEventsAttributes: false);
         tag search;
         tag section;
         tag select = new tag(attributes: ["autofocus", "disabled", "form", "multiple", "name", "required", "size"]);
@@ -131,6 +154,35 @@ namespace SourceCodeBuilderGenerator.Html
         tag var;
         tag video = new tag(userChildTags: ["source"], attributes: ["autoplay", "controls", "height", "loop", "muted", "poster", "preload", "src", "width"]);
         tag wbr;
+    #endregion
+
+    #region razorCode
+        tag @razorpage = new tag { CsName = "@razorpage",  TagType = tag.TagTypes.RazorPage,      UseGlobalAttributes = false, UseEventsAttributes = false, UserParentTags = ["_"] };
+
+        tag @case =      new tag { CsName = "@case",       TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @do =        new tag { CsName = "@do",         TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @default =   new tag { CsName = "@default",    TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @for =       new tag { CsName = "@for",        TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @foreach =   new tag { CsName = "@foreach",    TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @if =        new tag { CsName = "@if",         TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @else =      new tag { CsName = "@else",       TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @lock =      new tag { CsName = "@lock",       TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @switch =    new tag { CsName = "@switch",     TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @try =       new tag { CsName = "@try",        TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @catch =     new tag { CsName = "@catch",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @finally =   new tag { CsName = "@finally",    TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @using =     new tag { CsName = "@using",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+        tag @while =     new tag { CsName = "@while",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
+
+        tag @page =      new tag { CsName = "@page",       TagType = tag.TagTypes.RazorLine,      UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @namespace = new tag { CsName = "@namespace",  TagType = tag.TagTypes.RazorLine,      UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @functions = new tag { CsName = "@functions",  TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @inherits =  new tag { CsName = "@inherits",   TagType = tag.TagTypes.RazorLine,      UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @model =     new tag { CsName = "@model",      TagType = tag.TagTypes.RazorLine,      UseGlobalAttributes = false, UseEventsAttributes = false };
+
+        tag @razorcodeblock = new tag { CsName = "@razorcodeblock", WriteName = "@code", TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        #endregion
+#endif
     }
 
     internal class tag
@@ -139,7 +191,22 @@ namespace SourceCodeBuilderGenerator.Html
         internal List<string> UserParentTags = [];
         internal string? CsName;
         internal string? WriteName;
-        internal string? NameUpper1 => CsName.Substring(0,1).ToUpper() + CsName.Substring(1);
+        internal enum TagTypes { HtmlTag, RazorLine, RazorBlock, RazorCodeBlock , RazorPage}
+        internal TagTypes TagType = TagTypes.HtmlTag;
+        internal string? NameUpper1 => GetUpperName(CsName);
+
+        private string? GetUpperName(string? csName)
+        {
+            if (csName?[0] == '@')
+            {
+                return $"@{csName.Substring(1, 1).ToUpper()}{csName.Substring(2)}";
+            }
+            else
+            {
+                return $"{csName.Substring(0, 1).ToUpper()}{csName.Substring(1)}";
+            }
+        }
+
         internal List<tag>? ChildTags = [];
         internal List<tag>? ParentTags = [];
         internal List<string>? Attributes;
@@ -151,6 +218,7 @@ namespace SourceCodeBuilderGenerator.Html
         internal tag(string name)
         {
             CsName = name;
+            WriteName = name;
         }
         //internal tag(string[] userChildTags = null, string[] userParentTags = null, List<string>? attributes = null,
         //    bool useGlobalAttributes = true, bool useEventsAttributes = true)
