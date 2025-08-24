@@ -63,7 +63,7 @@ namespace SourceCodeBuilder
             
             foreach (var expression in Expressions)
             {
-                expression.BuildCode(writer, _defaultTabs);
+                expression.BuildCode(writer, _defaultTabs, forComments);
             }
         }
 
