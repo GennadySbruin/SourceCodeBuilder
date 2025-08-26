@@ -197,6 +197,9 @@ namespace SourceCodeBuilderGenerator.Html
                                 .Else
                                     .AddLine("writer.Write($\"{_defaultTabs}<{Name}{attributes}>{DeclaredInnerText.Replace(Environment.NewLine, Environment.NewLine + _defaultTabs)}</{Name}>\");")
                                 .EndIf)
+                            .ElseIf("InnerElements.Count == 0")
+                            .CodeBlock
+                                .AddLine("writer.Write($\"{_defaultTabs}<{Name}{attributes}/>\");")
                             .Else
                                 .AddLine("if (!string.IsNullOrEmpty(Name))")
                                 .AddLine("{")

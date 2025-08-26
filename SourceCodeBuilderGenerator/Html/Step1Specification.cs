@@ -28,13 +28,14 @@ namespace SourceCodeBuilderGenerator.Html
         tag code;
         tag div;
         tag html = new tag(attributes: ["xmlns"]);
-    #endregion
+        tag input = new tag(attributes: ["accept", "alt", "autocomplete", "autofocus", "checked", "dirname", "disabled", "form", "formaction", "formenctype", "formmethod", "formnovalidate", "formtarget", "height", "list", "max", "maxlength", "min", "minlength", "multiple", "name", "pattern", "placeholder", "popovertarget", "popovertargetaction", "readonly", "required", "size", "src", "step", "type", "value", "width"], userChildTags: []);
+        #endregion
 
         #region razorCode
         tag @razorpage = new tag { CsName = "@razorpage",  TagType = tag.TagTypes.RazorPage,      UseGlobalAttributes = false, UseEventsAttributes = false, UserParentTags = ["_"] };
         tag @foreach =   new tag { CsName = "@foreach",    TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @if =        new tag { CsName = "@if",         TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
-        tag @else =      new tag { CsName = "@else",       TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @else =      new tag { CsName = "@else",       TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false, WriteName = "else" };
 
         tag @page =      new tag { CsName = "@page",       TagType = tag.TagTypes.RazorLine,      UseGlobalAttributes = false, UseEventsAttributes = false };
 
@@ -55,7 +56,7 @@ namespace SourceCodeBuilderGenerator.Html
         tag bdo = new tag(attributes: ["dir"]);
         tag blockquote = new tag(attributes: ["cite"]);
         tag body = new tag(userParentTags: ["html"]);
-        tag br;
+        tag br = new tag(userChildTags: []);
         tag button = new tag(attributes: ["autofocus", "disabled", "form", "formaction", "formenctype", "formmethod", "formnovalidate", "formtarget", "popovertarget", "popovertargetaction", "name", "type", "value"]);
         tag canvas = new tag(attributes: ["height", "width"]);
         tag caption = new tag(userChildTags: [], userParentTags: ["table"]);
@@ -89,23 +90,23 @@ namespace SourceCodeBuilderGenerator.Html
         tag head = new tag(userParentTags: ["html"], userChildTags: ["title", "style", "base", "link", "meta", "script", "noscript"], useEventsAttributes: false);
         tag header;
         tag hgroup;
-        tag hr;
+        tag hr = new tag(userChildTags: []);
         tag html = new tag(attributes: ["xmlns"]);
         tag i;
         tag iframe = new tag(attributes: ["allow", "allowfullscreen", "allowpaymentrequest", "height", "loading", "name", "referrerpolicy", "sandbox", "src", "srcdoc", "width"]);
-        tag img = new tag(attributes: ["alt", "crossorigin", "height", "ismap", "loading", "longdesc", "referrerpolicy", "sizes", "src", "srcset", "usemap", "width"]);
-        tag input = new tag(attributes: ["accept", "alt", "autocomplete", "autofocus", "checked", "dirname", "disabled", "form", "formaction", "formenctype", "formmethod", "formnovalidate", "formtarget", "height", "list", "max", "maxlength", "min", "minlength", "multiple", "name", "pattern", "placeholder", "popovertarget", "popovertargetaction", "readonly", "required", "size", "src", "step", "type", "value", "width"]);
+        tag img = new tag(attributes: ["alt", "crossorigin", "height", "ismap", "loading", "longdesc", "referrerpolicy", "sizes", "src", "srcset", "usemap", "width"], userChildTags: []);
+        tag input = new tag(attributes: ["accept", "alt", "autocomplete", "autofocus", "checked", "dirname", "disabled", "form", "formaction", "formenctype", "formmethod", "formnovalidate", "formtarget", "height", "list", "max", "maxlength", "min", "minlength", "multiple", "name", "pattern", "placeholder", "popovertarget", "popovertargetaction", "readonly", "required", "size", "src", "step", "type", "value", "width"], userChildTags: []);
         tag ins = new tag(attributes: ["cite", "datetime"]);
         tag kbd;
         tag labelnew = new tag(attributes: ["for", "form"]);
         tag legend = new tag(userParentTags: ["fieldset"]);
         tag li = new tag(userParentTags: ["ol", "ul", "menu"], attributes: ["value"]);
-        tag link = new tag(attributes: ["crossorigin", "href", "hreflang", "media", "referrerpolicy", "rel", "sizes", "title", "type"]);
+        tag link = new tag(attributes: ["crossorigin", "href", "hreflang", "media", "referrerpolicy", "rel", "sizes", "title", "type"], userChildTags: []);
         tag main;
         tag map = new tag(attributes: ["name"], userChildTags: ["area"]);
         tag mark;
         tag menu = new tag(userChildTags: ["li"]);
-        tag meta = new tag(userParentTags: ["head"], attributes: ["charset", "content", "name"], useEventsAttributes: false);
+        tag meta = new tag(userParentTags: ["head"], attributes: ["charset", "content", "name"], useEventsAttributes: false, userChildTags: []);
         tag meter = new tag(attributes: ["form", "high", "low", "max", "min", "optimum", "value"]);
         tag nav;
         tag noscript = new tag(userChildTags: ["link", "style", "meta"], userParentTags: ["head", "body"]);
@@ -129,7 +130,7 @@ namespace SourceCodeBuilderGenerator.Html
         tag section;
         tag select = new tag(attributes: ["autofocus", "disabled", "form", "multiple", "name", "required", "size"]);
         tag small;
-        tag source = new tag(attributes: ["media", "sizes", "src", "srcset", "type"]);
+        tag source = new tag(attributes: ["media", "sizes", "src", "srcset", "type"], userChildTags: []);
         tag span;
         tag strong;
         tag style = new tag(userParentTags: ["head"], attributes: ["media", "type"]);
@@ -165,12 +166,12 @@ namespace SourceCodeBuilderGenerator.Html
         tag @for =       new tag { CsName = "@for",        TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @foreach =   new tag { CsName = "@foreach",    TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @if =        new tag { CsName = "@if",         TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
-        tag @else =      new tag { CsName = "@else",       TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @else =      new tag { CsName = "@else",       TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false, WriteName = "else"};
         tag @lock =      new tag { CsName = "@lock",       TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @switch =    new tag { CsName = "@switch",     TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @try =       new tag { CsName = "@try",        TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
-        tag @catch =     new tag { CsName = "@catch",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
-        tag @finally =   new tag { CsName = "@finally",    TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @catch =     new tag { CsName = "@catch",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, WriteName = "catch", Attributes = ["statement"] };
+        tag @finally =   new tag { CsName = "@finally",    TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false, WriteName = "finaly" };
         tag @using =     new tag { CsName = "@using",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @while =     new tag { CsName = "@while",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
 
@@ -187,7 +188,7 @@ namespace SourceCodeBuilderGenerator.Html
 
     internal class tag
     {
-        internal List<string> UserChildTags = [];
+        internal List<string>? UserChildTags;
         internal List<string> UserParentTags = [];
         internal string? CsName;
         internal string? WriteName;
@@ -212,7 +213,7 @@ namespace SourceCodeBuilderGenerator.Html
         internal List<string>? Attributes;
         internal bool UseGlobalAttributes = true;
         internal bool UseEventsAttributes = true;
-        internal bool WithUserChildTags => UserChildTags.Count > 0;
+        internal bool WithUserChildTags => UserChildTags != null;
         internal List<string> GetUserChildTags => UserChildTags;
         internal tag() { }
         internal tag(string name)
@@ -246,6 +247,7 @@ namespace SourceCodeBuilderGenerator.Html
             Attributes = attributes;
             if (userChildTags != null)
             {
+                UserChildTags ??= [];
                 UserChildTags.AddRange(userChildTags);
             }
             if (userParentTags != null)

@@ -28,7 +28,7 @@ public class TestRazor
                         .a_
                     .if_
                 .html_;
-        string template = "<html>\r\n  @if(true == true)\r\n  {\r\n    <a>\r\n    </a>\r\n  }\r\n</html>\r\n";
+        string template = "<html>\r\n  @if(true == true)\r\n  {\r\n    <a/>\r\n  }\r\n</html>\r\n";
         Assert.IsTrue(Test(html, template));
         TestContext.Write(_stringBuilder.ToString());
     }
@@ -43,7 +43,7 @@ public class TestRazor
                         .a_
                     .if_
                 .html_;
-        string template = "<html>\r\n  @if(true == true)\r\n  {\r\n    <a>\r\n    </a>\r\n  }\r\n</html>\r\n";
+        string template = "<html>\r\n  @if(true == true)\r\n  {\r\n    <a/>\r\n  }\r\n</html>\r\n";
         Assert.IsTrue(Test(html, template));
         TestContext.Write(_stringBuilder.ToString());
     }
@@ -70,7 +70,7 @@ public class TestRazor
                         .a_
                     .foreach_
                 .html_;
-        string template = "<html>\r\n  @foreach(var value in values)\r\n  {\r\n    <a>\r\n    </a>\r\n  }\r\n</html>\r\n";
+        string template = "<html>\r\n  @foreach(var value in values)\r\n  {\r\n    <a/>\r\n  }\r\n</html>\r\n";
         Assert.IsTrue(Test(html, template));
         TestContext.Write(_stringBuilder.ToString());
     }
@@ -85,7 +85,7 @@ public class TestRazor
                     .a_
                 .html_
             .razorpage_;
-        string template = "@page test\r\n<html>\r\n  <a>\r\n  </a>\r\n</html>\r\n\r\n";
+        string template = "@page test\r\n<html>\r\n  <a/>\r\n</html>\r\n\r\n";
         Assert.IsTrue(Test(html, template));
         TestContext.Write(_stringBuilder.ToString());
     }
@@ -106,7 +106,7 @@ public class TestRazor
                     .else_
                 .html_
             .razorpage_;
-        string template = "@page test\r\n<html>\r\n  @if(1 == 1)\r\n  {\r\n    <a>\r\n    </a>\r\n  }\r\n  @else\r\n  {\r\n    <div>\r\n    </div>\r\n  }\r\n</html>\r\n\r\n";
+        string template = "@page test\r\n<html>\r\n  @if(1 == 1)\r\n  {\r\n    <a/>\r\n  }\r\n  else\r\n  {\r\n    <div/>\r\n  }\r\n</html>\r\n\r\n";
         Assert.IsTrue(Test(html, template));
         TestContext.Write(_stringBuilder.ToString());
     }

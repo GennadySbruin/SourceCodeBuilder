@@ -29,7 +29,7 @@ namespace SourceCodeBuilderTest
             var html = HtmlBuilder
                 .html
                 .html_;
-            string template = "<html>\r\n</html>\r\n";
+            string template = "<html/>\r\n";
             Assert.IsTrue(Test(html, template));
             TestContext.Write(_stringBuilder.ToString());
         }
@@ -42,7 +42,7 @@ namespace SourceCodeBuilderTest
                     .html
                     .html_
                 .html_;
-            string template = "<html>\r\n  <html>\r\n  </html>\r\n</html>\r\n";
+            string template = "<html>\r\n  <html/>\r\n</html>\r\n";
             Assert.IsTrue(Test(html, template));
             TestContext.Write(_stringBuilder.ToString());
         }
@@ -57,7 +57,7 @@ namespace SourceCodeBuilderTest
                         .a_
                     .html_
                 .html_;
-            string template = "<html>\r\n  <html>\r\n    <a>\r\n    </a>\r\n  </html>\r\n</html>\r\n";
+            string template = "<html>\r\n  <html>\r\n    <a/>\r\n  </html>\r\n</html>\r\n";
             Assert.IsTrue(Test(html, template));
             TestContext.Write(_stringBuilder.ToString());
         }
@@ -106,7 +106,7 @@ namespace SourceCodeBuilderTest
                         .div.InnerTag(HtmlBuilder.div.div.div_.div_)
                     .div_
                 .html_;
-            string template = "<html>\r\n  <a class=\"asd\" id=\"345\" attr1=\"value1\">test</a>\r\n  <div id=\"id1\">\r\n  </div>\r\n  <div>\r\n    <a>Test1</a>\r\n    <a>Test2</a>\r\n    <div id=\"id1\">\r\n      <div class=\"class121\">\r\n        <div>asdas</div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div>\r\n    <div>\r\n      <div>\r\n        <div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</html>\r\n";
+            string template = "<html>\r\n  <a class=\"asd\" id=\"345\" attr1=\"value1\">test</a>\r\n  <div id=\"id1\"/>\r\n  <div>\r\n    <a>Test1</a>\r\n    <a>Test2</a>\r\n    <div id=\"id1\">\r\n      <div class=\"class121\">\r\n        <div>asdas</div>\r\n      </div>\r\n    </div>\r\n  </div>\r\n  <div>\r\n    <div>\r\n      <div>\r\n        <div/>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</html>\r\n";
             Assert.IsTrue(Test(html, template));
             TestContext.Write(_stringBuilder.ToString());
         }
@@ -123,7 +123,7 @@ namespace SourceCodeBuilderTest
             var html = HtmlBuilder
                 .html.InnerTag(innerTag);
 
-            string template = "<html>\r\n  <html>\r\n    <a>\r\n    </a>\r\n  </html>\r\n</html>\r\n";
+            string template = "<html>\r\n  <html>\r\n    <a/>\r\n  </html>\r\n</html>\r\n";
             Assert.IsTrue(Test(html, template));
             TestContext.Write(_stringBuilder.ToString());
         }
@@ -138,7 +138,22 @@ namespace SourceCodeBuilderTest
                         .tag_
                     .html_
                 .html_;
-            string template = "<html>\r\n  <html>\r\n    <userTag>\r\n    </userTag>\r\n  </html>\r\n</html>\r\n";
+            string template = "<html>\r\n  <html>\r\n    <userTag/>\r\n  </html>\r\n</html>\r\n";
+            Assert.IsTrue(Test(html, template));
+            TestContext.Write(_stringBuilder.ToString());
+        }
+
+        [TestMethod]
+        public void TestHtml9()
+        {
+            var html = HtmlBuilder
+                .html
+                    .html
+                        .Input(_type: "test").input_
+                    .html_
+                .html_;
+
+            string template = "<html>\r\n  <html>\r\n    <input type=\"test\"/>\r\n  </html>\r\n</html>\r\n";
             Assert.IsTrue(Test(html, template));
             TestContext.Write(_stringBuilder.ToString());
         }
