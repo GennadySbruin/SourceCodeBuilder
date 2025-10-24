@@ -95,6 +95,8 @@ namespace SourceCodeBuilderGenerator.Html
                                 .AddComments(["/// <summary>","/// Tree tabs","/// </summary>"]),
                             MyField.String("Name").Init("string.Empty")
                                 .AddComments(["/// <summary>","/// Tag name","/// </summary>"]),
+                            MyField.String("WriteName").Init("string.Empty")
+                                .AddComments(["/// <summary>","/// Tag write name","/// </summary>"]),
                             MyField.String("DeclaredInnerText").Init("string.Empty")
                                 .AddComments(["/// <summary>","/// Declared tag inner text","/// </summary>"]),
                             MyFieldBuilder.Private.Type("IElement").List.Name("InnerElements").Init("[]")

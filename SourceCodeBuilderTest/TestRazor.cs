@@ -106,7 +106,7 @@ public class TestRazor
                     .else_
                 .html_
             .razorpage_;
-        string template = "@page test\r\n<html>\r\n  @if(1 == 1)\r\n  {\r\n    <a>\r\n    </a>\r\n  }\r\n  @else\r\n  {\r\n    <div>\r\n    </div>\r\n  }\r\n</html>\r\n\r\n";
+        string template = "@page test\r\n<html>\r\n  @if(1 == 1)\r\n  {\r\n    <a>\r\n    </a>\r\n  }\r\n  else\r\n  {\r\n    <div>\r\n    </div>\r\n  }\r\n</html>\r\n\r\n";
         Assert.IsTrue(Test(html, template));
         TestContext.Write(_stringBuilder.ToString());
     }

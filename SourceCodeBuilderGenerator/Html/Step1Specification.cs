@@ -34,7 +34,7 @@ namespace SourceCodeBuilderGenerator.Html
         tag @razorpage = new tag { CsName = "@razorpage",  TagType = tag.TagTypes.RazorPage,      UseGlobalAttributes = false, UseEventsAttributes = false, UserParentTags = ["_"] };
         tag @foreach =   new tag { CsName = "@foreach",    TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @if =        new tag { CsName = "@if",         TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
-        tag @else =      new tag { CsName = "@else",       TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @else =      new tag { CsName = "@else",       TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false, WriteName= "else" };
 
         tag @page =      new tag { CsName = "@page",       TagType = tag.TagTypes.RazorLine,      UseGlobalAttributes = false, UseEventsAttributes = false };
 
@@ -165,12 +165,12 @@ namespace SourceCodeBuilderGenerator.Html
         tag @for =       new tag { CsName = "@for",        TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @foreach =   new tag { CsName = "@foreach",    TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @if =        new tag { CsName = "@if",         TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
-        tag @else =      new tag { CsName = "@else",       TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @else =      new tag { CsName = "@else",       TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false, WriteName = "else" };
         tag @lock =      new tag { CsName = "@lock",       TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @switch =    new tag { CsName = "@switch",     TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @try =       new tag { CsName = "@try",        TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
-        tag @catch =     new tag { CsName = "@catch",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
-        tag @finally =   new tag { CsName = "@finally",    TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false };
+        tag @catch =     new tag { CsName = "@catch",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, WriteName= "catch", Attributes = ["statement"] };
+        tag @finally =   new tag { CsName = "@finally",    TagType = tag.TagTypes.RazorCodeBlock, UseGlobalAttributes = false, UseEventsAttributes = false, WriteName = "finally" };
         tag @using =     new tag { CsName = "@using",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
         tag @while =     new tag { CsName = "@while",      TagType = tag.TagTypes.RazorBlock,     UseGlobalAttributes = false, UseEventsAttributes = false, Attributes = ["statement"] };
 

@@ -143,6 +143,48 @@ namespace SourceCodeBuilderTest
             TestContext.Write(_stringBuilder.ToString());
         }
 
+        [TestMethod]
+        public void TestHtml9()
+        {
+            string[] arr = ["1", "2"];
+            var html = HtmlBuilder
+                .html
+                    .html
+                        .InnerTags(arr.Select(o => HtmlBuilder.div.div_))
+                    .html_;
+            string template = "<html>\r\n  <html>\r\n    <div>\r\n    </div>\r\n    <div>\r\n    </div>\r\n  </html>\r\n</html>\r\n";
+            Assert.IsTrue(Test(html, template));
+            TestContext.Write(_stringBuilder.ToString());
+        }
+
+        [TestMethod]
+        public void TestHtml10()
+        {
+            string[] arr = ["1", "2"];
+            var html = HtmlBuilder
+                .html
+                    .html
+                        .InnerTags(arr.Select(o => HtmlBuilder.Tag("div").tag_))
+                    .html_;
+            string template = "<html>\r\n  <html>\r\n    <div>\r\n    </div>\r\n    <div>\r\n    </div>\r\n  </html>\r\n</html>\r\n";
+            Assert.IsTrue(Test(html, template));
+            TestContext.Write(_stringBuilder.ToString());
+        }
+
+        [TestMethod]
+        public void TestHtml11()
+        {
+            string[] arr = ["1", "2"];
+            var html = HtmlBuilder
+                .html
+                    .html
+                        .InnerTags(arr.Select(o => HtmlBuilder.Tag("div").InnerText(o).tag_))
+                    .html_;
+            string template = "<html>\r\n  <html>\r\n    <div>1</div>\r\n    <div>2</div>\r\n  </html>\r\n</html>\r\n";
+            Assert.IsTrue(Test(html, template));
+            TestContext.Write(_stringBuilder.ToString());
+        }
+
         private bool Test(HtmlBuilder builder, string code)
         {
             string result = builder.ToString();

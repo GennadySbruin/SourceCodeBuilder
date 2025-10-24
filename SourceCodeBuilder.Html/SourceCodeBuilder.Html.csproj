@@ -4,7 +4,19 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>1.0.4</Version>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <Title>Builder for making generated code</Title>
+    <PackageId>CodeGeneratorBuilder.Html</PackageId>
+    <Authors>Gennady Sbruin</Authors>
+    <Company>Gennady Sbruin</Company>
+    <Product>SourceCodeBuilder.Html</Product>
+    <Description>Builder for making generated code</Description>
+    <PackageProjectUrl>https://github.com/GennadySbruin/SourceCodeBuilder/settings</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>Generator; CodeBuilder; Html</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,5 +26,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <IsTrimmable>False</IsTrimmable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

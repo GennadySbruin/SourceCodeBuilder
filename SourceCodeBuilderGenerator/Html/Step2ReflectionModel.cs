@@ -49,6 +49,7 @@ namespace SourceCodeBuilderGenerator.Html
                     }
                     value.Attributes.AddRange(tag.EventAtributes);
                 }
+                value.WriteName ??= value.CsName;
                 Tags.Add(value ?? throw new ArgumentNullException("null tag"));
             }
         }
