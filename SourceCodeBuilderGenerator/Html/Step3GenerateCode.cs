@@ -59,6 +59,16 @@ namespace SourceCodeBuilderGenerator.Html
                         .AddLine("return Encoding.ASCII.GetString(memoryStream.ToArray());")
 
                     )
+                    .AddMethod(MyMethodBuilder
+                        .Public.Type("string").Name("ToString")
+                        .Parameter("Encoding? encoding = null")
+                        .AddLine("using MemoryStream memoryStream = new MemoryStream();")
+                        .AddLine("using StreamWriter streamWriter = new StreamWriter(memoryStream, encoding ?? Encoding.Default);")
+                        .AddLine("Generate(streamWriter);")
+                        .AddLine("streamWriter.Flush();")
+                        .AddLine("return (encoding ?? Encoding.Default).GetString(memoryStream.ToArray());")
+
+                    )
                 )
                 //Base interface for Tag and Code
                 .AddInterface(MyInterfaceBuilder.Public
