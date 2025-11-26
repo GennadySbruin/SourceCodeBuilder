@@ -284,10 +284,10 @@ namespace SourceCodeBuilder
             return _myNamespace?.ToString() ?? string.Empty;
         }
 
-        public bool Save()
+        public bool Save(Encoding? encoding = null)
         {
             MyNamespaceWriter myNamespaceWriter = new MyNamespaceWriter();
-            using (StreamWriter fs = new StreamWriter(_myNamespace.FileName))
+            using (StreamWriter fs = new StreamWriter(_myNamespace.FileName, false, encoding ?? Encoding.Default))
             {
                 myNamespaceWriter.GenerateCode(_myNamespace, fs);
             }
